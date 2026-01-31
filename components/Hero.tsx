@@ -47,14 +47,14 @@ export function Hero() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <button
               onClick={() => setIsCalculatorOpen(true)}
-              className="group bg-black text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all"
+              className="group bg-black text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none"
             >
               Inicie seu Projeto
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <Link
               href="#materials"
-              className="group px-8 py-4 text-sm uppercase tracking-widest border border-gray-300 hover:border-black transition-colors"
+              className="group px-8 py-4 text-sm uppercase tracking-widest border border-gray-300 hover:border-black transition-colors rounded-none"
             >
               Explorar Materiais
             </Link>

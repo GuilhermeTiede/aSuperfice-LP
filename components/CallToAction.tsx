@@ -26,7 +26,7 @@ export function CallToAction() {
         <Link
           href={generateWhatsAppLink()}
           target="_blank"
-          className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-full"
+          className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-none"
         >
           <MessageCircle className="w-5 h-5" />
           Falar no WhatsApp

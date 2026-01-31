@@ -67,7 +67,7 @@ export function Header() {
           ))}
           <button
             onClick={() => setIsCalculatorOpen(true)}
-            className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
+            className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none"
           >
             Inicie seu Projeto
           </button>
@@ -106,7 +106,7 @@ export function Header() {
                   setIsOpen(false);
                   setIsCalculatorOpen(true);
                 }}
-                className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest"
+                className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest rounded-none"
               >
                 Inicie seu Projeto
               </button>
