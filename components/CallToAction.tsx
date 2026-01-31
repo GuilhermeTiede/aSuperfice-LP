@@ -4,6 +4,14 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 
 export function CallToAction() {
+  const generateWhatsAppLink = () => {
+    const phoneNumber = "+5521994408290";
+    const message =
+      "Olá! Visitei o site A Superfície e gostaria de agendar uma consultoria para meu projeto.";
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+  };
+
   return (
     <section id="contact" className="py-32 bg-white text-center">
       <div className="container mx-auto px-6 max-w-4xl">
@@ -16,7 +24,7 @@ export function CallToAction() {
         </p>
 
         <Link
-          href="https://wa.me/5511999999999" // Replace with actual number
+          href={generateWhatsAppLink()}
           target="_blank"
           className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-full"
         >

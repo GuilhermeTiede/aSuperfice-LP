@@ -4,8 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { QuoteCalculator } from "@/components/QuoteCalculator";
 
 export function Hero() {
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden pt-20">
       <div className="absolute inset-0 z-0">
@@ -41,13 +45,13 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <Link
-              href="#contact"
+            <button
+              onClick={() => setIsCalculatorOpen(true)}
               className="group bg-black text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all"
             >
               Inicie seu Projeto
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </button>
             <Link
               href="#materials"
               className="group px-8 py-4 text-sm uppercase tracking-widest border border-gray-300 hover:border-black transition-colors"
@@ -57,6 +61,11 @@ export function Hero() {
           </div>
         </motion.div>
       </div>
+
+      <QuoteCalculator
+        isOpen={isCalculatorOpen}
+        onClose={() => setIsCalculatorOpen(false)}
+      />
     </section>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,9 +15,12 @@ const navItems = [
   { name: "Contato", href: "#contact" },
 ];
 
+import { QuoteCalculator } from "@/components/QuoteCalculator";
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,11 +40,18 @@ export function Header() {
       )}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-2xl font-serif font-bold tracking-tight z-50"
-        >
-          A SUPERFÍCIE
+        <Link href="/" className="flex items-center gap-3 z-50">
+          <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-gray-100 shadow-sm">
+            <Image
+              src="/logo-asuperficie.jpg"
+              alt="A Superfície"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <span className="text-xl md:text-2xl font-serif font-bold tracking-tight">
+            A SUPERFÍCIE
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -54,12 +65,12 @@ export function Header() {
               {item.name}
             </Link>
           ))}
-          <Link
-            href="#contact"
+          <button
+            onClick={() => setIsCalculatorOpen(true)}
             className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
           >
             Inicie seu Projeto
-          </Link>
+          </button>
         </nav>
 
         {/* Mobile Menu Toggle */}
@@ -90,17 +101,24 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
-              <Link
-                href="#contact"
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsCalculatorOpen(true);
+                }}
                 className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest"
-                onClick={() => setIsOpen(false)}
               >
                 Inicie seu Projeto
-              </Link>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      <QuoteCalculator
+        isOpen={isCalculatorOpen}
+        onClose={() => setIsCalculatorOpen(false)}
+      />
     </header>
   );
 }
