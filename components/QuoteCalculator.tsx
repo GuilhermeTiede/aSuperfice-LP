@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, MessageCircle, X } from "lucide-react";
+import { useState, useRef } from "react";
+import {
+  Plus,
+  Trash2,
+  MessageCircle,
+  X,
+  Paperclip,
+  FileText,
+  Image as ImageIcon,
+  File,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Wall = {
@@ -10,8 +19,21 @@ type Wall = {
   width: number;
 };
 
+type AttachedFile = {
+  id: string;
+  file: File;
+  preview?: string;
+  uploadedUrl?: string;
+  uploading?: boolean;
+  error?: boolean;
+};
+
 const ROLL_WIDTH = 120; // cm
 const ROLL_HEIGHT = 300; // cm
+
+// Cloudinary config
+const CLOUDINARY_CLOUD_NAME = "dtmiqeaog";
+const CLOUDINARY_UPLOAD_PRESET = "asuperficie_uploads"; // Create this preset in Cloudinary dashboard
 
 // Helper: Calculate rolls
 const calculateRolls = (
@@ -47,6 +69,35 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   const [walls, setWalls] = useState<Wall[]>([
     { id: "1", height: 0, width: 0 },
   ]);
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Upload file to Cloudinary
+  const uploadToCloudinary = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("folder", "asuperficie-projetos");
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      return null;
+    }
+  };
 
   const addWall = () => {
     setWalls([...walls, { id: Date.now().toString(), height: 0, width: 0 }]);
@@ -69,6 +120,79 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   const rollsData = calculateRolls(walls);
   const totalRolls = rollsData.reduce((sum, data) => sum + data.rolls, 0);
 
+  // File handling
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles: AttachedFile[] = Array.from(files).map((file) => {
+      const attachedFile: AttachedFile = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        file,
+        uploading: true,
+      };
+
+      // Create preview for images
+      if (file.type.startsWith("image/")) {
+        attachedFile.preview = URL.createObjectURL(file);
+      }
+
+      return attachedFile;
+    });
+
+    setAttachedFiles((prev) => [...prev, ...newFiles]);
+    setIsUploading(true);
+
+    // Upload each file to Cloudinary
+    for (const attachedFile of newFiles) {
+      const uploadedUrl = await uploadToCloudinary(attachedFile.file);
+
+      setAttachedFiles((prev) =>
+        prev.map((f) =>
+          f.id === attachedFile.id
+            ? {
+                ...f,
+                uploadedUrl: uploadedUrl || undefined,
+                uploading: false,
+                error: !uploadedUrl,
+              }
+            : f,
+        ),
+      );
+    }
+
+    setIsUploading(false);
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const removeFile = (id: string) => {
+    setAttachedFiles((prev) => {
+      const fileToRemove = prev.find((f) => f.id === id);
+      if (fileToRemove?.preview) {
+        URL.revokeObjectURL(fileToRemove.preview);
+      }
+      return prev.filter((f) => f.id !== id);
+    });
+  };
+
+  const getFileIcon = (file: File) => {
+    if (file.type.startsWith("image/"))
+      return <ImageIcon className="w-4 h-4" />;
+    if (file.type.includes("pdf") || file.type.includes("document"))
+      return <FileText className="w-4 h-4" />;
+    return <File className="w-4 h-4" />;
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
   const generateWhatsAppMessage = () => {
     const wallsInfo = walls
       .map(
@@ -77,13 +201,20 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
       )
       .join("\n");
 
+    // Include uploaded file links
+    const uploadedFiles = attachedFiles.filter((f) => f.uploadedUrl);
+    const filesInfo =
+      uploadedFiles.length > 0
+        ? `\n\n📎 *Arquivos anexados (${uploadedFiles.length}):*\n${uploadedFiles.map((f) => `• ${f.file.name}: ${f.uploadedUrl}`).join("\n")}`
+        : "";
+
     const message = `Olá! Gostaria de iniciar um projeto com A Superfície.
 
 📐 *Medidas estimadas:*
 ${wallsInfo}
 
 📦 *Estimativa de material (Base 120x300cm):*
-- Total de rolos sugeridos: ${totalRolls}
+- Total de rolos sugeridos: ${totalRolls}${filesInfo}
 
 Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
 
@@ -209,6 +340,109 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                 </button>
               </div>
 
+              {/* File Attachment Section */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-gray-700">
+                    Anexar Arquivos (opcional)
+                  </label>
+                  <span className="text-xs text-gray-400">
+                    Plantas, referências, imagens
+                  </span>
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  accept="image/*,.pdf,.doc,.docx,.dwg,.dxf"
+                />
+
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full py-3 border border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm"
+                >
+                  <Paperclip className="w-4 h-4" />
+                  Selecionar arquivos
+                </button>
+
+                {/* Attached Files List */}
+                {attachedFiles.length > 0 && (
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {attachedFiles.map((attached) => (
+                      <div
+                        key={attached.id}
+                        className={`flex items-center gap-3 p-2 rounded-lg border ${
+                          attached.error
+                            ? "bg-red-50 border-red-200"
+                            : attached.uploadedUrl
+                              ? "bg-green-50 border-green-200"
+                              : attached.uploading
+                                ? "bg-blue-50 border-blue-200"
+                                : "bg-gray-50 border-gray-100"
+                        }`}
+                      >
+                        {attached.preview ? (
+                          <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                            <img
+                              src={attached.preview}
+                              alt={attached.file.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded bg-gray-200 flex items-center justify-center flex-shrink-0 text-gray-500">
+                            {getFileIcon(attached.file)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-700 truncate">
+                            {attached.file.name}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs text-gray-400">
+                              {formatFileSize(attached.file.size)}
+                            </p>
+                            {attached.uploading && (
+                              <span className="text-xs text-blue-600 flex items-center gap-1">
+                                <span className="animate-spin">⏳</span>{" "}
+                                Enviando...
+                              </span>
+                            )}
+                            {attached.uploadedUrl && (
+                              <span className="text-xs text-green-600">
+                                ✓ Pronto
+                              </span>
+                            )}
+                            {attached.error && (
+                              <span className="text-xs text-red-600">
+                                ✗ Erro
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => removeFile(attached.id)}
+                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-md transition-colors flex-shrink-0"
+                          disabled={attached.uploading}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {attachedFiles.length > 0 && (
+                  <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg">
+                    ☁️ Os arquivos são enviados automaticamente para a nuvem. Os
+                    links serão incluídos na mensagem do WhatsApp.
+                  </p>
+                )}
+              </div>
+
               {totalRolls > 0 && (
                 <div className="p-4 bg-gray-900 text-white rounded-xl flex items-center justify-between">
                   <span className="text-sm text-gray-300">Total Estimado</span>
@@ -223,13 +457,13 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full py-4 rounded-full font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
-                  totalRolls > 0
+                  totalRolls > 0 && !isUploading
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
                 }`}
               >
                 <MessageCircle className="w-5 h-5" />
-                Continuar no WhatsApp
+                {isUploading ? "Enviando arquivos..." : "Continuar no WhatsApp"}
               </a>
 
               <p className="text-[10px] text-gray-400 text-center leading-relaxed px-4">
