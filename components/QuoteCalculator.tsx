@@ -19,6 +19,22 @@ type Wall = {
   width: number;
 };
 
+type ProductType = "wallpaper" | "vinyl" | "canvas" | "engraving";
+type WallpaperTexture = "linen" | "sand" | "cotton";
+
+const PRODUCT_OPTIONS = [
+  { id: "wallpaper", label: "Papel de Parede" },
+  { id: "vinyl", label: "Adesivo Vinil" },
+  { id: "canvas", label: "Canvas" },
+  { id: "engraving", label: "Gravura" },
+] as const;
+
+const TEXTURE_OPTIONS = [
+  { id: "linen", label: "Linho" },
+  { id: "sand", label: "Areia" },
+  { id: "cotton", label: "Algodão (Liso)" },
+] as const;
+
 type AttachedFile = {
   id: string;
   file: File;
@@ -33,7 +49,7 @@ const ROLL_HEIGHT = 300; // cm
 
 // Cloudinary config
 const CLOUDINARY_CLOUD_NAME = "dtmiqeaog";
-const CLOUDINARY_UPLOAD_PRESET = "asuperficie_uploads"; // Create this preset in Cloudinary dashboard
+const CLOUDINARY_UPLOAD_PRESET = "asuperficie_uploads"; // Must be set to "Unsigned" in Cloudinary settings
 
 // Helper: Calculate rolls
 const calculateRolls = (
@@ -69,6 +85,8 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   const [walls, setWalls] = useState<Wall[]>([
     { id: "1", height: 0, width: 0 },
   ]);
+  const [productType, setProductType] = useState<ProductType>("wallpaper");
+  const [texture, setTexture] = useState<WallpaperTexture>("linen");
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +107,13 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
         },
       );
 
-      if (!response.ok) throw new Error("Upload failed");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Cloudinary error details:", errorData);
+        throw new Error(
+          errorData.error?.message || `Upload failed: ${response.statusText}`,
+        );
+      }
 
       const data = await response.json();
       return data.secure_url;
@@ -119,6 +143,10 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
 
   const rollsData = calculateRolls(walls);
   const totalRolls = rollsData.reduce((sum, data) => sum + data.rolls, 0);
+  const totalArea = walls.reduce(
+    (acc, wall) => acc + (wall.width * wall.height) / 10000,
+    0,
+  );
 
   // File handling
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,10 +222,15 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   };
 
   const generateWhatsAppMessage = () => {
+    const productName = PRODUCT_OPTIONS.find(
+      (p) => p.id === productType,
+    )?.label;
+    const textureName = TEXTURE_OPTIONS.find((t) => t.id === texture)?.label;
+
     const wallsInfo = walls
       .map(
         (wall, index) =>
-          `Parede ${index + 1}: ${wall.height}cm (altura) x ${wall.width}cm (largura)`,
+          `${productType === "wallpaper" ? "Parede" : "Medida"} ${index + 1}: ${wall.height}cm (altura) x ${wall.width}cm (largura)`,
       )
       .join("\n");
 
@@ -208,15 +241,22 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
         ? `\n\n📎 *Arquivos anexados (${uploadedFiles.length}):*\n${uploadedFiles.map((f) => `• ${f.file.name}: ${f.uploadedUrl}`).join("\n")}`
         : "";
 
+    let estimateInfo = "";
+    if (productType === "wallpaper") {
+      estimateInfo = `\n📦 *Estimativa de material (Base 120x300cm):*\n- Total de rolos sugeridos: ${totalRolls}`;
+    } else {
+      estimateInfo = `\n📐 *Área total estimada:*\n- ${totalArea.toFixed(2)} m²`;
+    }
+
     const message = `Olá! Gostaria de iniciar um projeto com A Superfície.
 
-📐 *Medidas estimadas:*
+🎨 *Produto:* ${productName}${productType === "wallpaper" ? `\n🏷️ *Acabamento:* ${textureName}` : ""}
+
+📏 *Medidas:*
 ${wallsInfo}
+${estimateInfo}${filesInfo}
 
-📦 *Estimativa de material (Base 120x300cm):*
-- Total de rolos sugeridos: ${totalRolls}${filesInfo}
-
-Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
+Gostaria de agendar uma consultoria para discutir detalhes.`;
 
     const encodedMessage = encodeURIComponent(message);
     const phoneNumber = "5521994408290"; // Replace with actual number
@@ -248,20 +288,79 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-none transition-colors"
               >
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Informe as medidas das paredes para ter uma estimativa inicial
-                de material para revestimento (Papel de Parede ou Painéis).
-              </p>
+            <div className="p-6 space-y-8">
+              <div className="space-y-4">
+                <label className="text-sm font-medium text-gray-900 block">
+                  O que você deseja criar?
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {PRODUCT_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setProductType(option.id as ProductType)}
+                      className={`px-4 py-2 rounded-none text-sm font-medium transition-all ${
+                        productType === option.id
+                          ? "bg-black text-white shadow-md transform scale-[1.02]"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+
+                <AnimatePresence>
+                  {productType === "wallpaper" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <label className="text-sm font-medium text-gray-900 block mb-3">
+                        Escolha o acabamento
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {TEXTURE_OPTIONS.map((option) => (
+                          <button
+                            key={option.id}
+                            onClick={() =>
+                              setTexture(option.id as WallpaperTexture)
+                            }
+                            className={`px-4 py-2 rounded-none text-xs font-medium border transition-all ${
+                              texture === option.id
+                                ? "border-black bg-black/5 text-black"
+                                : "border-gray-200 text-gray-500 hover:border-gray-300"
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-gray-700">
+                    Medidas
+                  </label>
+                  <p className="text-xs text-gray-500">
+                    {productType === "wallpaper"
+                      ? "Informe altura e largura de cada parede"
+                      : "Informe as dimensões desejadas"}
+                  </p>
+                </div>
+
                 {walls.map((wall, index) => (
                   <div
                     key={wall.id}
@@ -269,12 +368,13 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">
-                        Parede {index + 1}
+                        {productType === "wallpaper" ? "Parede" : "Medida"}{" "}
+                        {index + 1}
                       </span>
                       {walls.length > 1 && (
                         <button
                           onClick={() => removeWall(wall.id)}
-                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-md transition-colors"
+                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-none transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -318,25 +418,28 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                         />
                       </div>
                     </div>
-                    {rollsData.find((r) => r.wallId === wall.id)?.rolls! >
-                      0 && (
-                      <p className="text-xs text-gray-500 pt-1">
-                        Estimativa:{" "}
-                        <span className="font-medium text-gray-900">
-                          {rollsData.find((r) => r.wallId === wall.id)?.rolls}{" "}
-                          rolo(s)
-                        </span>
-                      </p>
-                    )}
+                    {productType === "wallpaper" &&
+                      rollsData.find((r) => r.wallId === wall.id)?.rolls! >
+                        0 && (
+                        <p className="text-xs text-gray-500 pt-1">
+                          Estimativa:{" "}
+                          <span className="font-medium text-gray-900">
+                            {rollsData.find((r) => r.wallId === wall.id)?.rolls}{" "}
+                            rolo(s)
+                          </span>
+                        </p>
+                      )}
                   </div>
                 ))}
 
                 <button
                   onClick={addWall}
-                  className="w-full py-3 border border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="w-full py-3 border border-dashed border-gray-300 rounded-none text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <Plus className="w-4 h-4" />
-                  Adicionar outra parede
+                  {productType === "wallpaper"
+                    ? "Adicionar outra parede"
+                    : "Adicionar outra medida"}
                 </button>
               </div>
 
@@ -362,7 +465,7 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-3 border border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="w-full py-3 border border-dashed border-gray-300 rounded-none text-gray-500 hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <Paperclip className="w-4 h-4" />
                   Selecionar arquivos
@@ -425,7 +528,7 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                         </div>
                         <button
                           onClick={() => removeFile(attached.id)}
-                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-md transition-colors flex-shrink-0"
+                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-none transition-colors flex-shrink-0"
                           disabled={attached.uploading}
                         >
                           <X className="w-4 h-4" />
@@ -443,7 +546,7 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                 )}
               </div>
 
-              {totalRolls > 0 && (
+              {totalRolls > 0 && productType === "wallpaper" && (
                 <div className="p-4 bg-gray-900 text-white rounded-xl flex items-center justify-between">
                   <span className="text-sm text-gray-300">Total Estimado</span>
                   <span className="text-lg font-medium">
@@ -452,12 +555,23 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
                 </div>
               )}
 
+              {totalArea > 0 && productType !== "wallpaper" && (
+                <div className="p-4 bg-gray-900 text-white rounded-xl flex items-center justify-between">
+                  <span className="text-sm text-gray-300">Total Estimado</span>
+                  <span className="text-lg font-medium">
+                    {totalArea.toFixed(2)} m²
+                  </span>
+                </div>
+              )}
+
               <a
                 href={generateWhatsAppMessage()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-full py-4 rounded-full font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
-                  totalRolls > 0 && !isUploading
+                className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
+                  (productType === "wallpaper"
+                    ? totalRolls > 0
+                    : totalArea > 0) && !isUploading
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
                 }`}
@@ -467,8 +581,9 @@ Gostaria de agendar uma consultoria para discutir materiais e acabamentos.`;
               </a>
 
               <p className="text-[10px] text-gray-400 text-center leading-relaxed px-4">
-                *O cálculo é uma estimativa baseada em rolos padrão de 120cm de
-                largura. A consultoria técnica validará as medidas finais.
+                {productType === "wallpaper"
+                  ? "*O cálculo é uma estimativa baseada em rolos padrão de 120cm de largura."
+                  : "*O cálculo de área é estimado. A consultoria confirmará as medidas e formatos ideais."}
               </p>
             </div>
           </motion.div>
