@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, MapPin, Mail } from "lucide-react";
 
 export function Footer() {
@@ -8,11 +9,18 @@ export function Footer() {
     <footer className="bg-gray-950 text-white py-16 border-t border-gray-900">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <Link
-            href="/"
-            className="text-2xl font-serif font-bold tracking-tight mb-6 block"
-          >
-            A SUPERFÍCIE
+          <Link href="/" className="flex items-center gap-3 mb-6">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-800">
+              <Image
+                src="/logo-asuperficie.jpg"
+                alt="A Superfície"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <span className="text-2xl font-serif font-bold tracking-tight">
+              A SUPERFÍCIE
+            </span>
           </Link>
           <p className="text-gray-400 font-light max-w-sm mb-8">
             Estúdio de impressão artística de alto padrão e consultoria técnica
