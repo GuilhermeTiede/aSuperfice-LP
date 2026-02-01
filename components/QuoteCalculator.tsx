@@ -17,22 +17,17 @@ type Wall = {
   id: string;
   height: number;
   width: number;
+  product: ProductType;
+  files: AttachedFile[];
 };
 
 type ProductType = "wallpaper" | "vinyl" | "canvas" | "engraving";
-type WallpaperTexture = "linen" | "sand" | "cotton";
 
 const PRODUCT_OPTIONS = [
-  { id: "wallpaper", label: "Papel de Parede" },
-  { id: "vinyl", label: "Adesivo Vinil" },
-  { id: "canvas", label: "Canvas" },
-  { id: "engraving", label: "Gravura" },
-] as const;
-
-const TEXTURE_OPTIONS = [
-  { id: "linen", label: "Linho" },
-  { id: "sand", label: "Areia" },
-  { id: "cotton", label: "Algodão (Liso)" },
+  { id: "wallpaper", label: "Papel de Parede", price: 180 },
+  { id: "vinyl", label: "Adesivo Vinil", price: 150 },
+  { id: "canvas", label: "Canvas", price: 350 },
+  { id: "engraving", label: "Gravura", price: 200 },
 ] as const;
 
 type AttachedFile = {
@@ -44,37 +39,9 @@ type AttachedFile = {
   error?: boolean;
 };
 
-const ROLL_WIDTH = 120; // cm
-const ROLL_HEIGHT = 300; // cm
-
 // Cloudinary config
 const CLOUDINARY_CLOUD_NAME = "dtmiqeaog";
 const CLOUDINARY_UPLOAD_PRESET = "asuperficie_uploads"; // Must be set to "Unsigned" in Cloudinary settings
-
-// Helper: Calculate rolls
-const calculateRolls = (
-  walls: Wall[],
-): {
-  wallId: string;
-  rolls: number;
-  widthRolls: number;
-  heightRolls: number;
-}[] => {
-  return walls.map((wall) => {
-    if (wall.width <= 0 || wall.height <= 0) {
-      return { wallId: wall.id, rolls: 0, widthRolls: 0, heightRolls: 0 };
-    }
-    // Logic from reference
-    const widthRolls = Math.ceil(wall.width / ROLL_WIDTH);
-    const heightRolls = Math.ceil(wall.height / ROLL_HEIGHT);
-    return {
-      wallId: wall.id,
-      rolls: widthRolls * heightRolls,
-      widthRolls,
-      heightRolls,
-    };
-  });
-};
 
 interface QuoteCalculatorProps {
   isOpen: boolean;
@@ -83,13 +50,11 @@ interface QuoteCalculatorProps {
 
 export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   const [walls, setWalls] = useState<Wall[]>([
-    { id: "1", height: 0, width: 0 },
+    { id: "1", height: 0, width: 0, product: "wallpaper", files: [] },
   ]);
-  const [productType, setProductType] = useState<ProductType>("wallpaper");
-  const [texture, setTexture] = useState<WallpaperTexture>("linen");
-  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [generalNotes, setGeneralNotes] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Remove global attachedFiles state and specific fileInputRef since we'll use per-wall inputs
 
   // Upload file to Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string | null> => {
@@ -124,8 +89,36 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   };
 
   const addWall = () => {
-    setWalls([...walls, { id: Date.now().toString(), height: 0, width: 0 }]);
+    setWalls([
+      ...walls,
+      {
+        id: Date.now().toString(),
+        height: 0,
+        width: 0,
+        product: "wallpaper",
+        files: [],
+      },
+    ]);
   };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
+  const calculateWallPrice = (wall: Wall) => {
+    const pricePerSqm =
+      PRODUCT_OPTIONS.find((p) => p.id === wall.product)?.price || 0;
+    const area = (wall.height / 100) * (wall.width / 100);
+    return area * pricePerSqm;
+  };
+
+  const totalPrice = walls.reduce(
+    (acc, wall) => acc + calculateWallPrice(wall),
+    0,
+  );
 
   const removeWall = (id: string) => {
     if (walls.length > 1) {
@@ -133,7 +126,11 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     }
   };
 
-  const updateWall = (id: string, field: "height" | "width", value: number) => {
+  const updateWall = (
+    id: string,
+    field: "height" | "width" | "product",
+    value: number | ProductType,
+  ) => {
     setWalls(
       walls.map((wall) =>
         wall.id === id ? { ...wall, [field]: value } : wall,
@@ -141,15 +138,11 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     );
   };
 
-  const rollsData = calculateRolls(walls);
-  const totalRolls = rollsData.reduce((sum, data) => sum + data.rolls, 0);
-  const totalArea = walls.reduce(
-    (acc, wall) => acc + (wall.width * wall.height) / 10000,
-    0,
-  );
-
   // File handling
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    wallId: string,
+  ) => {
     const files = e.target.files;
     if (!files) return;
 
@@ -168,23 +161,38 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
       return attachedFile;
     });
 
-    setAttachedFiles((prev) => [...prev, ...newFiles]);
+    // Add files to wall state immediately
+    setWalls((prevWalls) =>
+      prevWalls.map((wall) =>
+        wall.id === wallId
+          ? { ...wall, files: [...wall.files, ...newFiles] }
+          : wall,
+      ),
+    );
+
     setIsUploading(true);
 
     // Upload each file to Cloudinary
     for (const attachedFile of newFiles) {
       const uploadedUrl = await uploadToCloudinary(attachedFile.file);
 
-      setAttachedFiles((prev) =>
-        prev.map((f) =>
-          f.id === attachedFile.id
+      setWalls((prevWalls) =>
+        prevWalls.map((wall) =>
+          wall.id === wallId
             ? {
-                ...f,
-                uploadedUrl: uploadedUrl || undefined,
-                uploading: false,
-                error: !uploadedUrl,
+                ...wall,
+                files: wall.files.map((f) =>
+                  f.id === attachedFile.id
+                    ? {
+                        ...f,
+                        uploadedUrl: uploadedUrl || undefined,
+                        uploading: false,
+                        error: !uploadedUrl,
+                      }
+                    : f,
+                ),
               }
-            : f,
+            : wall,
         ),
       );
     }
@@ -192,19 +200,25 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     setIsUploading(false);
 
     // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    e.target.value = "";
   };
 
-  const removeFile = (id: string) => {
-    setAttachedFiles((prev) => {
-      const fileToRemove = prev.find((f) => f.id === id);
-      if (fileToRemove?.preview) {
-        URL.revokeObjectURL(fileToRemove.preview);
-      }
-      return prev.filter((f) => f.id !== id);
-    });
+  const removeFile = (wallId: string, fileId: string) => {
+    setWalls((prevWalls) =>
+      prevWalls.map((wall) => {
+        if (wall.id !== wallId) return wall;
+
+        const fileToRemove = wall.files.find((f) => f.id === fileId);
+        if (fileToRemove?.preview) {
+          URL.revokeObjectURL(fileToRemove.preview);
+        }
+
+        return {
+          ...wall,
+          files: wall.files.filter((f) => f.id !== fileId),
+        };
+      }),
+    );
   };
 
   const getFileIcon = (file: File) => {
@@ -222,39 +236,28 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   };
 
   const generateWhatsAppMessage = () => {
-    const productName = PRODUCT_OPTIONS.find(
-      (p) => p.id === productType,
-    )?.label;
-    const textureName = TEXTURE_OPTIONS.find((t) => t.id === texture)?.label;
+    const projectDetails = walls
+      .map((wall, index) => {
+        const productName = PRODUCT_OPTIONS.find(
+          (p) => p.id === wall.product,
+        )?.label;
+        const price = calculateWallPrice(wall);
+        const files = wall.files
+          .filter((f) => f.uploadedUrl)
+          .map((f) => `   (Anexo: ${f.uploadedUrl})`)
+          .join("\n");
 
-    const wallsInfo = walls
-      .map(
-        (wall, index) =>
-          `${productType === "wallpaper" ? "Parede" : "Medida"} ${index + 1}: ${wall.height}cm (altura) x ${wall.width}cm (largura)`,
-      )
-      .join("\n");
-
-    // Include uploaded file links
-    const uploadedFiles = attachedFiles.filter((f) => f.uploadedUrl);
-    const filesInfo =
-      uploadedFiles.length > 0
-        ? `\n\n📎 *Arquivos anexados (${uploadedFiles.length}):*\n${uploadedFiles.map((f) => `• ${f.file.name}: ${f.uploadedUrl}`).join("\n")}`
-        : "";
-
-    let estimateInfo = "";
-    if (productType === "wallpaper") {
-      estimateInfo = `\n📦 *Estimativa de material (Base 120x300cm):*\n- Total de rolos sugeridos: ${totalRolls}`;
-    } else {
-      estimateInfo = `\n📐 *Área total estimada:*\n- ${totalArea.toFixed(2)} m²`;
-    }
+        return `- Parede ${index + 1}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)}${files ? "\n" + files : ""}`;
+      })
+      .join("\n\n");
 
     const message = `Olá! Gostaria de iniciar um projeto com A Superfície.
 
-🎨 *Produto:* ${productName}${productType === "wallpaper" ? `\n🏷️ *Acabamento:* ${textureName}` : ""}
+*Detalhes do Projeto:*
+${projectDetails}
 
-📏 *Medidas:*
-${wallsInfo}
-${estimateInfo}${filesInfo}
+*Total Geral Estimado:* ${formatCurrency(totalPrice)}
+${generalNotes ? `\n*Observações Gerais:*\n${generalNotes}` : ""}
 
 Gostaria de agendar uma consultoria para discutir detalhes.`;
 
@@ -297,89 +300,57 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
             {/* Content */}
             <div className="p-6 space-y-8">
               <div className="space-y-4">
-                <label className="text-sm font-medium text-gray-900 block">
-                  O que você deseja criar?
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {PRODUCT_OPTIONS.map((option) => (
-                    <button
-                      key={option.id}
-                      onClick={() => setProductType(option.id as ProductType)}
-                      className={`px-4 py-2 rounded-none text-sm font-medium transition-all ${
-                        productType === option.id
-                          ? "bg-black text-white shadow-md transform scale-[1.02]"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-
-                <AnimatePresence>
-                  {productType === "wallpaper" && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <label className="text-sm font-medium text-gray-900 block mb-3">
-                        Escolha o acabamento
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {TEXTURE_OPTIONS.map((option) => (
-                          <button
-                            key={option.id}
-                            onClick={() =>
-                              setTexture(option.id as WallpaperTexture)
-                            }
-                            className={`px-4 py-2 rounded-none text-xs font-medium border transition-all ${
-                              texture === option.id
-                                ? "border-black bg-black/5 text-black"
-                                : "border-gray-200 text-gray-500 hover:border-gray-300"
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-gray-700">
-                    Medidas
+                    Medidas e Material
                   </label>
                   <p className="text-xs text-gray-500">
-                    {productType === "wallpaper"
-                      ? "Informe altura e largura de cada parede"
-                      : "Informe as dimensões desejadas"}
+                    Informe altura, largura e material para cada área
                   </p>
                 </div>
 
                 {walls.map((wall, index) => (
                   <div
                     key={wall.id}
-                    className="p-4 bg-gray-50 rounded-xl space-y-3 border border-gray-100"
+                    className="p-4 bg-gray-50 rounded-xl space-y-4 border border-gray-100"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-sm font-medium text-gray-700">
-                        {productType === "wallpaper" ? "Parede" : "Medida"}{" "}
-                        {index + 1}
+                        Parede {index + 1}
                       </span>
-                      {walls.length > 1 && (
-                        <button
-                          onClick={() => removeWall(wall.id)}
-                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-none transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap gap-1">
+                          {PRODUCT_OPTIONS.map((option) => (
+                            <button
+                              key={option.id}
+                              onClick={() =>
+                                updateWall(
+                                  wall.id,
+                                  "product",
+                                  option.id as ProductType,
+                                )
+                              }
+                              className={`px-2 py-1 rounded-none text-[10px] font-medium transition-all border ${
+                                wall.product === option.id
+                                  ? "bg-black text-white border-black"
+                                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                        {walls.length > 1 && (
+                          <button
+                            onClick={() => removeWall(wall.id)}
+                            className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-none transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
+
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="text-xs text-gray-500 mb-1 block">
@@ -418,17 +389,62 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                         />
                       </div>
                     </div>
-                    {productType === "wallpaper" &&
-                      rollsData.find((r) => r.wallId === wall.id)?.rolls! >
-                        0 && (
-                        <p className="text-xs text-gray-500 pt-1">
-                          Estimativa:{" "}
-                          <span className="font-medium text-gray-900">
-                            {rollsData.find((r) => r.wallId === wall.id)?.rolls}{" "}
-                            rolo(s)
-                          </span>
-                        </p>
+
+                    <div className="pt-2 flex justify-between items-end border-t border-gray-100 mt-4">
+                      <div className="flex-1 mr-4">
+                        <label
+                          htmlFor={`file-upload-${wall.id}`}
+                          className="cursor-pointer flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          <Paperclip className="w-3 h-3" />
+                          Anexar arquivo
+                        </label>
+                        <input
+                          id={`file-upload-${wall.id}`}
+                          type="file"
+                          multiple
+                          onChange={(e) => handleFileSelect(e, wall.id)}
+                          className="hidden"
+                          accept="image/*,.pdf,.doc,.docx,.dwg,.dxf"
+                        />
+
+                        {/* Files List for this Wall */}
+                        {wall.files && wall.files.length > 0 && (
+                          <div className="mt-2 space-y-1">
+                            {wall.files.map((file) => (
+                              <div
+                                key={file.id}
+                                className="flex items-center justify-between bg-gray-100 px-2 py-1 rounded text-[10px]"
+                              >
+                                <div className="flex items-center gap-1 truncate max-w-[120px]">
+                                  {getFileIcon(file.file)}
+                                  <span className="truncate">
+                                    {file.file.name}
+                                  </span>
+                                </div>
+                                <button
+                                  onClick={() => removeFile(wall.id, file.id)}
+                                  className="text-gray-400 hover:text-red-500"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {(wall.height > 0 || wall.width > 0) && (
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500">
+                            Estimativa:{" "}
+                            <span className="font-medium text-gray-900">
+                              {formatCurrency(calculateWallPrice(wall))}
+                            </span>
+                          </p>
+                        </div>
                       )}
+                    </div>
                   </div>
                 ))}
 
@@ -437,130 +453,35 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                   className="w-full py-3 border border-dashed border-gray-300 rounded-none text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <Plus className="w-4 h-4" />
-                  {productType === "wallpaper"
-                    ? "Adicionar outra parede"
-                    : "Adicionar outra medida"}
+                  Adicionar outra parede
                 </button>
               </div>
 
-              {/* File Attachment Section */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
-                    Anexar Arquivos (opcional)
-                  </label>
-                  <span className="text-xs text-gray-400">
-                    Plantas, referências, imagens
-                  </span>
-                </div>
-
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  onChange={handleFileSelect}
-                  className="hidden"
-                  accept="image/*,.pdf,.doc,.docx,.dwg,.dxf"
+              {/* General Notes */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Observações Gerais
+                </label>
+                <textarea
+                  value={generalNotes}
+                  onChange={(e) => setGeneralNotes(e.target.value)}
+                  placeholder="Alguma observação específica sobre o projeto?"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors min-h-[80px]"
                 />
-
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full py-3 border border-dashed border-gray-300 rounded-none text-gray-500 hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm"
-                >
-                  <Paperclip className="w-4 h-4" />
-                  Selecionar arquivos
-                </button>
-
-                {/* Attached Files List */}
-                {attachedFiles.length > 0 && (
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {attachedFiles.map((attached) => (
-                      <div
-                        key={attached.id}
-                        className={`flex items-center gap-3 p-2 rounded-lg border ${
-                          attached.error
-                            ? "bg-red-50 border-red-200"
-                            : attached.uploadedUrl
-                              ? "bg-green-50 border-green-200"
-                              : attached.uploading
-                                ? "bg-blue-50 border-blue-200"
-                                : "bg-gray-50 border-gray-100"
-                        }`}
-                      >
-                        {attached.preview ? (
-                          <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0">
-                            <img
-                              src={attached.preview}
-                              alt={attached.file.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-10 h-10 rounded bg-gray-200 flex items-center justify-center flex-shrink-0 text-gray-500">
-                            {getFileIcon(attached.file)}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-700 truncate">
-                            {attached.file.name}
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <p className="text-xs text-gray-400">
-                              {formatFileSize(attached.file.size)}
-                            </p>
-                            {attached.uploading && (
-                              <span className="text-xs text-blue-600 flex items-center gap-1">
-                                <span className="animate-spin">⏳</span>{" "}
-                                Enviando...
-                              </span>
-                            )}
-                            {attached.uploadedUrl && (
-                              <span className="text-xs text-green-600">
-                                ✓ Pronto
-                              </span>
-                            )}
-                            {attached.error && (
-                              <span className="text-xs text-red-600">
-                                ✗ Erro
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => removeFile(attached.id)}
-                          className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-none transition-colors flex-shrink-0"
-                          disabled={attached.uploading}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {attachedFiles.length > 0 && (
-                  <p className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded-lg">
-                    ☁️ Os arquivos são enviados automaticamente para a nuvem. Os
-                    links serão incluídos na mensagem do WhatsApp.
-                  </p>
-                )}
               </div>
-
-              {totalRolls > 0 && productType === "wallpaper" && (
-                <div className="p-4 bg-gray-900 text-white rounded-xl flex items-center justify-between">
-                  <span className="text-sm text-gray-300">Total Estimado</span>
-                  <span className="text-lg font-medium">
-                    {totalRolls} rolos
-                  </span>
-                </div>
-              )}
-
-              {totalArea > 0 && productType !== "wallpaper" && (
-                <div className="p-4 bg-gray-900 text-white rounded-xl flex items-center justify-between">
-                  <span className="text-sm text-gray-300">Total Estimado</span>
-                  <span className="text-lg font-medium">
-                    {totalArea.toFixed(2)} m²
-                  </span>
+              {/* Total Summary */}
+              {totalPrice > 0 && (
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Total Estimado</span>
+                    <span className="font-medium text-lg text-gray-900">
+                      {formatCurrency(totalPrice)}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-gray-400">
+                    *Valor aproximado. O orçamento final será enviado após
+                    análise técnica.
+                  </p>
                 </div>
               )}
 
@@ -569,9 +490,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
-                  (productType === "wallpaper"
-                    ? totalRolls > 0
-                    : totalArea > 0) && !isUploading
+                  walls.some((w) => w.height > 0 && w.width > 0) && !isUploading
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
                 }`}
@@ -581,9 +500,8 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
               </a>
 
               <p className="text-[10px] text-gray-400 text-center leading-relaxed px-4">
-                {productType === "wallpaper"
-                  ? "*O cálculo é uma estimativa baseada em rolos padrão de 120cm de largura."
-                  : "*O cálculo de área é estimado. A consultoria confirmará as medidas e formatos ideais."}
+                *Ao continuar, você falará diretamente com nossa equipe técnica
+                para confirmar medidas e receber o orçamento final.
               </p>
             </div>
           </motion.div>
