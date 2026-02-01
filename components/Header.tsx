@@ -11,7 +11,6 @@ const navItems = [
   { name: "Sobre", href: "#about" },
   { name: "Materiais", href: "#materials" },
   { name: "Wall Art", href: "#wall-art" },
-  { name: "Blog", href: "#blog" },
   { name: "Contato", href: "#contact" },
 ];
 

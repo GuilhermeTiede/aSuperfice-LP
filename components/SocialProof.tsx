@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const partners = [
   "Studio Alpha Architects",
-  "Marina Silva Fine Art",
+  "Marina Silva Interiores",
   "Urban Design Co.",
   "Construct Art",
   "Felipe Oliveira Photography",
@@ -18,7 +18,7 @@ export function SocialProof() {
     <section className="py-20 bg-white border-b border-gray-100">
       <div className="container mx-auto px-6">
         <p className="text-center text-xs uppercase tracking-[0.2em] text-gray-400 mb-12">
-          A Escolha de Arquitetos e Artistas
+          A Escolha de Arquitetos e Designers
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 opacity-70">

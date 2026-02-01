@@ -33,15 +33,15 @@ export function Hero() {
           className="max-w-4xl mx-auto"
         >
           <span className="block text-xs md:text-sm tracking-[0.2em] text-gray-500 uppercase mb-6">
-            Impressão Fine Art e Consultoria
+            Impressão de Grande Formato e Consultoria
           </span>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-tight text-gray-900 mb-8">
             Elevando Superfícies <br /> à Arte
           </h1>
           <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-            Especializados em impressão artística de alto padrão e superfícies
-            arquitetônicas. Transformamos espaços com substratos texturizados
-            premium e qualidade intransigente.
+            Especializados em impressão de grande formato e decoração de
+            superfícies arquitetônicas. Transformamos espaços com substratos
+            texturizados premium e qualidade intransigente.
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">

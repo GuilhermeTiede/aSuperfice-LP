@@ -34,10 +34,10 @@ export function CallToAction() {
         <p className="mt-6 text-sm text-gray-400">
           Ou envie um email para{" "}
           <a
-            href="mailto:contact@asuperficie.com"
+            href="mailto:contato@asuperficie.com.br"
             className="underline hover:text-black"
           >
-            contact@asuperficie.com
+            contato@asuperficie.com.br
           </a>
         </p>
       </div>

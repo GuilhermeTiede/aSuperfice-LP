@@ -25,10 +25,10 @@ export function WallArtSpecialty() {
             Wall Art <br /> Imersiva
           </h2>
           <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed mb-12">
-            Somos especialistas em reprodução em larga escala que mantém a
-            intimidade da obra original. Nossa tecnologia permite ambientes
-            imersivos perfeitos, transformando superfícies arquitetônicas em
-            telas deslumbrantes.
+            Somos especialistas em impressão em larga escala que materializa a
+            visão do projeto. Nossa tecnologia permite ambientes imersivos
+            perfeitos, transformando superfícies arquitetônicas em elementos de
+            design exclusivos.
           </p>
 
           <button className="border border-white/30 px-10 py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">

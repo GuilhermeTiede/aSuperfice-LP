@@ -61,7 +61,7 @@ export function About() {
                   Precisão
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Tecnologia de impressão de qualidade museológica.
+                  Tecnologia de impressão de alta resolução e durabilidade.
                 </p>
               </div>
             </div>

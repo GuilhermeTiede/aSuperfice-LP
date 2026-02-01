@@ -4,21 +4,21 @@ import { motion } from "framer-motion";
 
 const services = [
   {
-    category: "Impressão",
+    category: "Impressão de Grande Formato",
     items: [
-      "Impressões em Canvas de Qualidade Museológica",
-      "Impressões Fine Art Digitais (Giclée)",
-      "Painéis de Parede Personalizados",
-      "Papéis de Parede com Suporte a Rapport",
+      "Canvas Impresso Personalizado",
+      "Papel de Parede Personalizado",
+      "Adesivo Vinílico para Decoração e Arquitetura",
+      "Gravura e Revestimentos Texturizados",
     ],
   },
   {
-    category: "Serviços",
+    category: "Serviços Especializados",
     items: [
-      "Tratamento de Imagem e Pré-Impressão",
-      "Instalação Especializada",
-      "Consultoria no Local",
-      "Soluções de Molduraria Personalizada",
+      "Instalação Profissional de Revestimentos",
+      "Pré-impressão e Ajuste de Imagem",
+      "Consultoria de Materiais e Acabamentos",
+      "Projetos Especiais para Arquitetos e Designers",
     ],
   },
 ];

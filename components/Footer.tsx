@@ -23,18 +23,19 @@ export function Footer() {
             </span>
           </Link>
           <p className="text-gray-400 font-light max-w-sm mb-8">
-            Estúdio de impressão artística de alto padrão e consultoria técnica
-            para arquitetos, artistas e designers.
+            Estúdio de impressão de grande formato e consultoria técnica para
+            arquitetos e designers de interiores.
           </p>
           <div className="flex gap-4">
             <a
-              href="#"
+              href="https://www.instagram.com/ateliedeimpressao"
+              target="_blank"
               className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors"
             >
               <Instagram className="w-5 h-5" />
             </a>
             <a
-              href="mailto:contact@asuperficie.com"
+              href="mailto:contato@asuperficie.com.br"
               className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-colors"
             >
               <Mail className="w-5 h-5" />
