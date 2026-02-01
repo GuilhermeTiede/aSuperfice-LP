@@ -1,0 +1,24 @@
+# Cache headers para Netlify/Cloudflare Pages
+# https://docs.netlify.com/routing/headers/
+
+# Imagens WebP - cache de 1 ano
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fontes - cache de 1 ano
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+# JavaScript e CSS - cache de 1 ano (versionados pelo build)
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML - cache curto para permitir updates
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Página principal
+/
+  Cache-Control: public, max-age=0, must-revalidate

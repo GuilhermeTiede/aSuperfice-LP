@@ -12,10 +12,11 @@ export function Footer() {
           <Link href="/" className="flex items-center gap-3 mb-6">
             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-800">
               <Image
-                src="/logo-asuperficie.jpg"
+                src="/logo-asuperficie.webp"
                 alt="A Superfície"
                 fill
                 className="object-cover"
+                loading="lazy"
               />
             </div>
             <span className="text-2xl font-serif font-bold tracking-tight">

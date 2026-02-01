@@ -15,10 +15,13 @@ export function About() {
             transition={{ duration: 0.8 }}
             className="relative aspect-[3/4] md:aspect-square bg-gray-100 overflow-hidden"
           >
-            {/* Placeholder for Atelier/Workshop Image */}
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-light">
-              Ambiente do Ateliê
-            </div>
+            <Image
+              src="/ambiente-atelie.webp"
+              alt="Ambiente do Ateliê A Superfície"
+              fill
+              className="object-cover hover:scale-105 transition-transform duration-700"
+              loading="lazy"
+            />
           </motion.div>
 
           <motion.div
@@ -27,7 +30,7 @@ export function About() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-serif mb-8 text-gray-900">
+            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-gray-900 font-medium">
               O Conceito do Ateliê
             </h2>
             <div className="space-y-6 text-gray-600 font-light leading-relaxed text-lg">

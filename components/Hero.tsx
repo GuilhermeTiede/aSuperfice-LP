@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
@@ -12,26 +11,25 @@ export function Hero() {
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden pt-20">
+      {/* Background com animação não-bloqueante */}
       <div className="absolute inset-0 z-0">
-        {/* Placeholder for a high-end artistic background image */}
-        <div className="absolute inset-0 bg-gray-100" />
-        {/* Uncomment and replace src with your actual image */}
-        {/* <Image
-          src="/hero-bg.jpg"
-          alt="Artistic Texture"
-          fill
-          className="object-cover opacity-50"
-          priority
-        /> */}
+        <div className="absolute inset-0 animate-fade-in">
+          <Image
+            src="/bloco-inicial.webp"
+            alt="Textura Artística de Fundo"
+            fill
+            className="object-cover opacity-40 blur-sm"
+            priority
+            fetchPriority="high"
+            loading="eager"
+            sizes="100vw"
+          />
+        </div>
       </div>
 
+      {/* Conteúdo principal - renderizado imediatamente para LCP */}
       <div className="container mx-auto px-6 relative z-10 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-4xl mx-auto"
-        >
+        <div className="max-w-4xl mx-auto animate-fade-in-up">
           <span className="block text-xs md:text-sm tracking-[0.2em] text-gray-500 uppercase mb-6">
             Impressão de Grande Formato e Consultoria
           </span>
@@ -59,7 +57,7 @@ export function Hero() {
               Explorar Materiais
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <QuoteCalculator

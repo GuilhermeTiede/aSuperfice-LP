@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 
 const materialImages = [
-  { src: "/Canvas tela.jpg", alt: "Textura da tela Canvas" },
-  { src: "/adesivo blockout.jpg", alt: "Acabamento adesivo blockout" },
-  { src: "/papel algodao.jpg", alt: "Textura papel algodão" },
-  { src: "/papel areia.jpg", alt: "Textura papel areia" },
-  { src: "/papel linho.jpg", alt: "Textura papel linho" },
+  { src: "/Canvas-tela.webp", alt: "Textura da tela Canvas" },
+  { src: "/adesivo-blockout.webp", alt: "Acabamento adesivo blockout" },
+  { src: "/papel-algodao.webp", alt: "Textura papel algodão" },
+  { src: "/papel-areia.webp", alt: "Textura papel areia" },
+  { src: "/papel-linho.webp", alt: "Textura papel linho" },
 ];
 
 const descriptions = [
@@ -35,10 +35,10 @@ export function Materials() {
           viewport={{ once: true }}
           className="mb-16 md:mb-24 text-center max-w-3xl mx-auto"
         >
-          <span className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-4 block">
+          <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
             Materialidade
           </span>
-          <h2 className="text-4xl md:text-5xl font-serif mb-6">
+          <h2 className="text-5xl md:text-6xl font-serif mb-6 font-medium">
             Substratos e Texturas
           </h2>
           <p className="text-gray-600 font-light text-lg">
@@ -61,6 +61,8 @@ export function Materials() {
               <img
                 src={img.src}
                 alt={img.alt}
+                loading="lazy"
+                decoding="async"
                 className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
               />
             </motion.div>
