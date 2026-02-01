@@ -2,27 +2,26 @@
 
 import { motion } from "framer-motion";
 
-const materials = [
+const materialImages = [
+  { src: "/Canvas tela.jpg", alt: "Textura da tela Canvas" },
+  { src: "/adesivo blockout.jpg", alt: "Acabamento adesivo blockout" },
+  { src: "/papel algodao.jpg", alt: "Textura papel algodão" },
+  { src: "/papel areia.jpg", alt: "Textura papel areia" },
+  { src: "/papel linho.jpg", alt: "Textura papel linho" },
+];
+
+const descriptions = [
   {
-    id: 1,
-    name: "Canvas Premium",
-    description:
-      "Mistura de algodão de qualidade museológica com textura profunda para profundidade artística.",
-    type: "Canvas",
+    title: "Canvas Premium",
+    text: "Tecido 100% algodão com tratamento especial para reprodução de telas, garantindo profundidade cromática e durabilidade.",
   },
   {
-    id: 2,
-    name: "Fine Art Texturizado",
-    description:
-      "Papel de alta gramatura com distintas qualidades táteis de superfície.",
-    type: "Papel",
+    title: "Substratos Wall Art",
+    text: "Bases texturizadas para papéis de parede que simulam linho, fibras naturais e tramas, transformando paredes em superfícies sensoriais.",
   },
   {
-    id: 3,
-    name: "Revestimento Estruturado",
-    description:
-      "Substratos duráveis e laváveis para espaços arquitetônicos de alto tráfego.",
-    type: "Parede",
+    title: "Adesivo Blockout Fosco",
+    text: "Coringa na decoração para ambientes de alta exposição ou para revestir móveis ou objetos decorativos.",
   },
 ];
 
@@ -40,7 +39,7 @@ export function Materials() {
             Materialidade
           </span>
           <h2 className="text-4xl md:text-5xl font-serif mb-6">
-            Substrates e Texturas
+            Substratos e Texturas
           </h2>
           <p className="text-gray-600 font-light text-lg">
             Oferecemos uma seleção exclusiva de superfícies imprimíveis,
@@ -49,36 +48,45 @@ export function Materials() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {materials.map((item, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-gray-200">
+          {materialImages.map((img, idx) => (
             <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              key={idx}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group cursor-pointer"
+              transition={{ delay: idx * 0.1 }}
+              className="aspect-square bg-gray-200 relative overflow-hidden group border border-gray-100"
             >
-              <div className="aspect-square bg-white border border-gray-200 mb-6 overflow-hidden relative">
-                {/* Macro Image Placeholder */}
-                <div className="absolute inset-0 bg-gray-200 group-hover:bg-gray-300 transition-colors duration-500" />
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                  VER MACRO
-                </div>
-              </div>
-              <div className="pr-4">
-                <span className="text-xs text-gray-400 uppercase tracking-widest block mb-2">
-                  {item.type}
-                </span>
-                <h3 className="text-2xl font-serif mb-3 group-hover:text-gray-600 transition-colors">
-                  {item.name}
-                </h3>
-                <p className="text-sm text-gray-500 leading-relaxed font-light">
-                  {item.description}
-                </p>
-              </div>
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+              />
             </motion.div>
           ))}
+
+          {/* 6th block: Text */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="aspect-square bg-white p-6 flex flex-col justify-center border border-gray-100"
+          >
+            <div className="space-y-4 h-full flex flex-col justify-center">
+              {descriptions.map((desc, i) => (
+                <div key={i}>
+                  <h3 className="font-serif text-base mb-1 text-gray-900">
+                    {desc.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-light leading-relaxed">
+                    {desc.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
