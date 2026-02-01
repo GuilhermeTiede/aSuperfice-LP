@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const criticalCSS = `
   *,*::before,*::after{box-sizing:border-box;border:0 solid}
   html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,sans-serif}
-  body{margin:0;line-height:inherit;background-color:#fff;color:#030712}
+  body{margin:0;line-height:inherit;background-color:#fcfbf8;color:#0c0a09}
   h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}
   img{display:block;max-width:100%;height:auto}
   .scroll-smooth{scroll-behavior:smooth}
@@ -38,7 +38,7 @@ const criticalCSS = `
   .h-screen{height:100vh}.w-full{width:100%}
   .items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:between}
   .overflow-hidden{overflow:hidden}.text-center{text-align:center}
-  .bg-white{background-color:#fff}.bg-transparent{background-color:transparent}
+  .bg-white{background-color:#fcfbf8}.bg-transparent{background-color:transparent}
   .text-gray-900{color:#111827}.text-gray-600{color:#4b5563}.text-gray-500{color:#6b7280}
   .font-serif{font-family:var(--font-cormorant-garamond),ui-serif,serif}
   .font-sans{font-family:var(--font-inter),ui-sans-serif,system-ui,sans-serif}
@@ -52,7 +52,7 @@ const criticalCSS = `
   .container{width:100%;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}
   .object-cover{object-fit:cover}.opacity-40{opacity:.4}.blur-sm{filter:blur(4px)}
   .transition-all{transition:all .15s cubic-bezier(.4,0,.2,1)}
-  .bg-black{background-color:#000}.text-white{color:#fff}
+  .bg-black{background-color:#000}.text-white{color:#fcfbf8}
   .rounded-full{border-radius:9999px}.border{border-width:1px}
   @keyframes fade-in{from{opacity:0}to{opacity:1}}
   @keyframes fade-in-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -89,7 +89,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-white text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
+        className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
       >
         {children}
       </body>
