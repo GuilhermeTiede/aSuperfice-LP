@@ -18,7 +18,7 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "A Superfície | Impressão Artística Premium",
+  title: "Ateliê de Impressão :: aSuperficie | Impressão Artística Premium",
   description:
     "Estúdio de impressão artística de alto padrão para Wall Art e superfícies arquitetônicas.",
 };
@@ -89,6 +89,7 @@ export default function RootLayout({
         />
       </head>
       <body
+        suppressHydrationWarning
         className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
       >
         {children}

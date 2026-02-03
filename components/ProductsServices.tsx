@@ -25,9 +25,9 @@ const portfolio = [
     items: [
       {
         icon: ImageIcon,
-        title: "Canvas Decorativo",
+        title: "Canvas p/ Telas",
         description:
-          "Tecido 100% algodão com tratamento especial para reprodução de alta fidelidade.",
+          "Tecido 100% algodão com tratamento especial para reprodução de alta fidelidade, para quadros e obras de arte.",
       },
       {
         icon: Layers,
@@ -43,9 +43,9 @@ const portfolio = [
       },
       {
         icon: Printer,
-        title: "Gravuras & Texturas",
+        title: "Gravuras & Posters",
         description:
-          "Revestimentos texturizados que trazem profundidade tátil para seus projetos.",
+          "Impressões em diversos formatos e substratos para composições de quadros.",
       },
     ],
   },
@@ -61,9 +61,9 @@ const portfolio = [
       },
       {
         icon: MonitorCheck,
-        title: "Pré-impressão & Tratamento",
+        title: "Pré-impressão & Ajustes",
         description:
-          "Análise crítica de arquivos e correção de cores para garantir o resultado esperado.",
+          "Análise crítica de arquivos, montagem dos planos de corte e prova de cores para garantir o resultado esperado.",
       },
       {
         icon: MessageSquareText,
@@ -73,7 +73,7 @@ const portfolio = [
       },
       {
         icon: PencilRuler,
-        title: "Projetos Especiais",
+        title: "Projetos Especiais & Corporativos",
         description:
           "Desenvolvimento de soluções sob medida para demandas complexas de arquitetura.",
       },

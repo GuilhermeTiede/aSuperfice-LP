@@ -13,14 +13,14 @@ export function Footer() {
             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-800">
               <Image
                 src="/logo-asuperficie.webp"
-                alt="A Superfície"
+                alt="Ateliê de Impressão :: aSuperficie"
                 fill
                 className="object-cover"
                 loading="lazy"
               />
             </div>
             <span className="text-2xl font-serif font-bold tracking-tight">
-              A SUPERFÍCIE
+              Ateliê de Impressão :: aSuperficie
             </span>
           </Link>
           <p className="text-gray-400 font-light max-w-sm mb-8">
@@ -102,7 +102,8 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-6 mt-16 pt-8 border-t border-gray-900 text-center text-gray-600 text-xs tracking-widest">
-        &copy; {currentYear} A Superfície. Todos os direitos reservados.
+        &copy; {currentYear} Ateliê de Impressão :: aSuperficie. Todos os
+        direitos reservados.
       </div>
     </footer>
   );

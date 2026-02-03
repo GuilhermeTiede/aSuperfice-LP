@@ -19,9 +19,12 @@ type Wall = {
   width: number;
   product: ProductType;
   files: AttachedFile[];
+  includeInstallation: boolean;
 };
 
 type ProductType = "wallpaper" | "vinyl" | "canvas" | "engraving";
+
+const FIXED_SETUP_PRICE = 350;
 
 const PRODUCT_OPTIONS = [
   { id: "wallpaper", label: "Papel de Parede", price: 180 },
@@ -50,7 +53,14 @@ interface QuoteCalculatorProps {
 
 export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   const [walls, setWalls] = useState<Wall[]>([
-    { id: "1", height: 0, width: 0, product: "wallpaper", files: [] },
+    {
+      id: "1",
+      height: 0,
+      width: 0,
+      product: "wallpaper",
+      files: [],
+      includeInstallation: false,
+    },
   ]);
   const [generalNotes, setGeneralNotes] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -97,6 +107,7 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
         width: 0,
         product: "wallpaper",
         files: [],
+        includeInstallation: false,
       },
     ]);
   };
@@ -109,10 +120,11 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   };
 
   const calculateWallPrice = (wall: Wall) => {
+    if (wall.height <= 0 || wall.width <= 0) return 0;
     const pricePerSqm =
       PRODUCT_OPTIONS.find((p) => p.id === wall.product)?.price || 0;
     const area = (wall.height / 100) * (wall.width / 100);
-    return area * pricePerSqm;
+    return area * pricePerSqm + FIXED_SETUP_PRICE;
   };
 
   const totalPrice = walls.reduce(
@@ -128,8 +140,8 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
 
   const updateWall = (
     id: string,
-    field: "height" | "width" | "product",
-    value: number | ProductType,
+    field: "height" | "width" | "product" | "includeInstallation",
+    value: number | ProductType | boolean,
   ) => {
     setWalls(
       walls.map((wall) =>
@@ -247,11 +259,15 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
           .map((f) => `   (Anexo: ${f.uploadedUrl})`)
           .join("\n");
 
-        return `- Parede ${index + 1}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)}${files ? "\n" + files : ""}`;
+        const installationText = wall.includeInstallation
+          ? "\n  *→ Cliente deseja cotar instalação*"
+          : "";
+
+        return `- Parede ${index + 1}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)} (inclui Montagem e prova de cor)${installationText}${files ? "\n" + files : ""}`;
       })
       .join("\n\n");
 
-    const message = `Olá! Gostaria de iniciar um projeto com A Superfície.
+    const message = `Olá! Gostaria de iniciar um projeto com Ateliê de Impressão :: aSuperficie.
 
 *Detalhes do Projeto:*
 ${projectDetails}
@@ -391,22 +407,46 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                     </div>
 
                     <div className="pt-2 flex justify-between items-end border-t border-gray-100 mt-4">
-                      <div className="flex-1 mr-4">
-                        <label
-                          htmlFor={`file-upload-${wall.id}`}
-                          className="cursor-pointer flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
-                        >
-                          <Paperclip className="w-3 h-3" />
-                          Anexar arquivo
-                        </label>
-                        <input
-                          id={`file-upload-${wall.id}`}
-                          type="file"
-                          multiple
-                          onChange={(e) => handleFileSelect(e, wall.id)}
-                          className="hidden"
-                          accept="image/*,.pdf,.doc,.docx,.dwg,.dxf"
-                        />
+                      <div className="flex-1 mr-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id={`install-${wall.id}`}
+                            checked={!!wall.includeInstallation}
+                            onChange={(e) =>
+                              updateWall(
+                                wall.id,
+                                "includeInstallation",
+                                e.target.checked,
+                              )
+                            }
+                            className="rounded border-gray-300 text-black focus:ring-black w-3 h-3"
+                          />
+                          <label
+                            htmlFor={`install-${wall.id}`}
+                            className="text-xs text-gray-700 cursor-pointer"
+                          >
+                            Desejo cotar instalação
+                          </label>
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor={`file-upload-${wall.id}`}
+                            className="cursor-pointer flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                          >
+                            <Paperclip className="w-3 h-3" />
+                            Anexar arquivo
+                          </label>
+                          <input
+                            id={`file-upload-${wall.id}`}
+                            type="file"
+                            multiple
+                            onChange={(e) => handleFileSelect(e, wall.id)}
+                            className="hidden"
+                            accept="image/*,.pdf,.doc,.docx,.dwg,.dxf"
+                          />
+                        </div>
 
                         {/* Files List for this Wall */}
                         {wall.files && wall.files.length > 0 && (
@@ -441,6 +481,9 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                             <span className="font-medium text-gray-900">
                               {formatCurrency(calculateWallPrice(wall))}
                             </span>
+                          </p>
+                          <p className="text-[10px] text-gray-400 mt-0.5">
+                            (Inclui montagem e prova de cor)
                           </p>
                         </div>
                       )}
@@ -481,6 +524,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                   <p className="text-[10px] text-gray-400">
                     *Valor aproximado. O orçamento final será enviado após
                     análise técnica.
+                    <br />* Valor já incluso montagem e prova de cor.
                   </p>
                 </div>
               )}
