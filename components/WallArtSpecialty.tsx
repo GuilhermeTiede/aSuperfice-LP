@@ -2,65 +2,32 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Instagram, ArrowRight, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// Configuração do Feed do Instagram
-// Para puxar posts reais, recomenda-se usar um serviço como behold.so (gratuito)
-// para gerar uma URL JSON segura, pois a API direta do Instagram exige autenticação backend.
-const INSTAGRAM_FEED_URL = ""; // Ex: "https://feeds.behold.so/YOUR-FEED-ID"
+const TOTAL_IMAGES = 24;
+const projectImages = Array.from({ length: TOTAL_IMAGES }).map(
+  (_, i) => `/projetos_realizados/${i + 1}.webp`,
+);
 
 export function WallArtSpecialty() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [feedPosts, setFeedPosts] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const staticImages = [
-    {
-      src: "/Canvas-tela.webp",
-      alt: "Canvas Fine Art",
-      link: "https://www.instagram.com/asuperficie/",
-    },
-    {
-      src: "/papel-algodao.webp",
-      alt: "Papel Algodão",
-      link: "https://www.instagram.com/asuperficie/",
-    },
-    {
-      src: "/ambiente-atelie.webp",
-      alt: "Nosso Ateliê",
-      link: "https://www.instagram.com/asuperficie/",
-    },
-    {
-      src: "/papel-linho.webp",
-      alt: "Papel Linho",
-      link: "https://www.instagram.com/asuperficie/",
-    },
-  ];
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % projectImages.length);
+  };
 
-  useEffect(() => {
-    if (isGalleryOpen && INSTAGRAM_FEED_URL && feedPosts.length === 0) {
-      setIsLoading(true);
-      fetch(INSTAGRAM_FEED_URL)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch");
-          return res.json();
-        })
-        .then((data) => {
-          // Normaliza os dados (suporte a behold.so ou formato padrão da Graph API)
-          const posts = Array.isArray(data) ? data : data.data;
-          setFeedPosts(posts.slice(0, 4)); // Pega os 4 mais recentes
-        })
-        .catch((err) => {
-          console.error("Erro ao carregar Instagram:", err);
-          setError(true);
-        })
-        .finally(() => setIsLoading(false));
-    }
-  }, [isGalleryOpen, feedPosts.length]);
+  const prevImage = () => {
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + projectImages.length) % projectImages.length,
+    );
+  };
 
-  const displayItems = feedPosts.length > 0 ? feedPosts : staticImages;
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity;
+  };
 
   return (
     <section
@@ -70,7 +37,7 @@ export function WallArtSpecialty() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/wall-art.webp"
+          src="/Wall-Art-corredor.webp"
           alt="Wall Art Imersiva"
           fill
           className="object-cover object-top opacity-40 mix-blend-overlay"
@@ -107,90 +74,79 @@ export function WallArtSpecialty() {
           >
             {isGalleryOpen ? "Fechar Projetos" : "Ver Projetos"}
           </button>
-
-          <AnimatePresence>
-            {isGalleryOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="w-full max-w-4xl overflow-hidden"
-              >
-                <div className="pt-8 pb-4">
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <Loader2 className="w-8 h-8 animate-spin text-white/50" />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                      {displayItems.map((item, index) => {
-                        // Normaliza campos entre API e estático
-                        const src = item.mediaUrl || item.media_url || item.src;
-                        const alt =
-                          item.caption || item.alt || "Instagram Post";
-                        const link = item.permalink || item.link;
-                        const isVideo =
-                          item.mediaType === "VIDEO" ||
-                          item.media_type === "VIDEO";
-                        // Se for vídeo sem thumbnail explícita na API, talvez precise tratar,
-                        // mas a maioria das APIs públicas retorna o mediaUrl como thumb para vídeo ou tem campo específico.
-
-                        return (
-                          <motion.div
-                            key={item.id || index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="aspect-square relative overflow-hidden group bg-gray-800 cursor-pointer"
-                          >
-                            <a
-                              href={link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block w-full h-full"
-                            >
-                              {src ? (
-                                <Image
-                                  src={src}
-                                  alt={alt}
-                                  fill
-                                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                  unoptimized={
-                                    !!(item.mediaUrl || item.media_url)
-                                  } // Necessário para imagens externas se não configurar domains
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gray-800 text-xs text-gray-500">
-                                  Sem imagem
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <Instagram className="w-6 h-6 text-white" />
-                              </div>
-                            </a>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  <a
-                    href="https://www.instagram.com/asuperficie/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm uppercase tracking-widest text-white/70 hover:text-white transition-colors group"
-                  >
-                    <Instagram className="w-4 h-4" />
-                    <span>Siga-nos no Instagram</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {isGalleryOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
+          >
+            <button
+              onClick={() => setIsGalleryOpen(false)}
+              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110] p-2"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            <div className="relative w-full max-w-6xl h-[80vh] flex items-center justify-center">
+              <button
+                onClick={prevImage}
+                className="absolute left-0 md:-left-12 z-10 p-4 text-white/50 hover:text-white transition-colors hover:bg-white/10 rounded-full"
+              >
+                <ChevronLeft className="w-8 h-8 md:w-10 md:h-10" />
+              </button>
+
+              <div className="w-full h-full relative flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentImageIndex}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative w-full h-full"
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={1}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = swipePower(offset.x, velocity.x);
+
+                      if (swipe < -swipeConfidenceThreshold) {
+                        nextImage();
+                      } else if (swipe > swipeConfidenceThreshold) {
+                        prevImage();
+                      }
+                    }}
+                  >
+                    <Image
+                      src={projectImages[currentImageIndex]}
+                      alt={`Projeto realizado ${currentImageIndex + 1}`}
+                      fill
+                      className="object-contain" // object-contain mantem proporção sem cortar
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <button
+                onClick={nextImage}
+                className="absolute right-0 md:-right-12 z-10 p-4 text-white/50 hover:text-white transition-colors hover:bg-white/10 rounded-full"
+              >
+                <ChevronRight className="w-8 h-8 md:w-10 md:h-10" />
+              </button>
+            </div>
+
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-light text-sm tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/10">
+              {currentImageIndex + 1} / {projectImages.length}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

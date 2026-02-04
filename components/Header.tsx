@@ -15,14 +15,17 @@ export function Header() {
           <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-gray-100 shadow-sm">
             <Image
               src="/logo-asuperficie.webp"
-              alt="Ateliê de Impressão :: aSuperficie"
+              alt="Ateliê de Impressão | aSuperficie"
               fill
               className="object-cover"
               priority
             />
           </div>
           <span className="text-xl md:text-2xl font-serif font-bold tracking-tight">
-            Ateliê de Impressão :: aSuperficie
+            Ateliê de Impressão{" "}
+            <span className="font-sans text-lg md:text-xl font-light opacity-80">
+              | aSuperficie
+            </span>
           </span>
         </Link>
 

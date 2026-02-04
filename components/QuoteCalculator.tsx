@@ -22,15 +22,22 @@ type Wall = {
   includeInstallation: boolean;
 };
 
-type ProductType = "wallpaper" | "vinyl" | "canvas" | "engraving";
+type ProductType =
+  | "wallpaper"
+  | "vinyl"
+  | "canvas"
+  | "engraving"
+  | "sample_kit";
 
 const FIXED_SETUP_PRICE = 350;
+const SAMPLE_KIT_PRICE = 80;
 
 const PRODUCT_OPTIONS = [
   { id: "wallpaper", label: "Papel de Parede", price: 180 },
   { id: "vinyl", label: "Adesivo Vinil", price: 150 },
   { id: "canvas", label: "Canvas", price: 350 },
   { id: "engraving", label: "Gravura", price: 200 },
+  { id: "sample_kit", label: "Kit de Amostras", price: SAMPLE_KIT_PRICE },
 ] as const;
 
 type AttachedFile = {
@@ -120,11 +127,16 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   };
 
   const calculateWallPrice = (wall: Wall) => {
+    if (wall.product === "sample_kit") return SAMPLE_KIT_PRICE;
     if (wall.height <= 0 || wall.width <= 0) return 0;
     const pricePerSqm =
       PRODUCT_OPTIONS.find((p) => p.id === wall.product)?.price || 0;
     const area = (wall.height / 100) * (wall.width / 100);
-    return area * pricePerSqm + FIXED_SETUP_PRICE;
+
+    const shouldAddSetupPrice =
+      wall.product === "wallpaper" || wall.product === "vinyl";
+
+    return area * pricePerSqm + (shouldAddSetupPrice ? FIXED_SETUP_PRICE : 0);
   };
 
   const totalPrice = walls.reduce(
@@ -263,11 +275,22 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
           ? "\n  *→ Cliente deseja cotar instalação*"
           : "";
 
-        return `- Parede ${index + 1}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)} (inclui Montagem e prova de cor)${installationText}${files ? "\n" + files : ""}`;
+        const wallLabel =
+          wall.product === "wallpaper"
+            ? `Parede ${index + 1}`
+            : wall.product === "sample_kit"
+              ? `Item ${index + 1}`
+              : `Imagem ${index + 1}`;
+
+        if (wall.product === "sample_kit") {
+          return `- ${wallLabel}: Kit de Amostras\n  Preço: ${formatCurrency(SAMPLE_KIT_PRICE)}`;
+        }
+
+        return `- ${wallLabel}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)} (inclui Montagem e prova de cor)${installationText}${files ? "\n" + files : ""}`;
       })
       .join("\n\n");
 
-    const message = `Olá! Gostaria de iniciar um projeto com Ateliê de Impressão :: aSuperficie.
+    const message = `Olá! Gostaria de iniciar um projeto com o Ateliê de Impressão da aSuperficie.
 
 *Detalhes do Projeto:*
 ${projectDetails}
@@ -332,7 +355,11 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                   >
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-sm font-medium text-gray-700">
-                        Parede {index + 1}
+                        {wall.product === "wallpaper"
+                          ? `Parede ${index + 1}`
+                          : wall.product === "sample_kit"
+                            ? `Item ${index + 1}`
+                            : `Imagem ${index + 1}`}
                       </span>
                       <div className="flex items-center gap-2">
                         <div className="flex flex-wrap gap-1">
@@ -367,68 +394,72 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs text-gray-500 mb-1 block">
-                          Altura (cm)
-                        </label>
-                        <input
-                          type="number"
-                          placeholder="250"
-                          value={wall.height || ""}
-                          onChange={(e) =>
-                            updateWall(
-                              wall.id,
-                              "height",
-                              Number.parseInt(e.target.value) || 0,
-                            )
-                          }
-                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-500 mb-1 block">
-                          Largura (cm)
-                        </label>
-                        <input
-                          type="number"
-                          placeholder="300"
-                          value={wall.width || ""}
-                          onChange={(e) =>
-                            updateWall(
-                              wall.id,
-                              "width",
-                              Number.parseInt(e.target.value) || 0,
-                            )
-                          }
-                          className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="pt-2 flex justify-between items-end border-t border-gray-100 mt-4">
-                      <div className="flex-1 mr-4 flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
+                    {wall.product !== "sample_kit" && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs text-gray-500 mb-1 block">
+                            Altura (cm)
+                          </label>
                           <input
-                            type="checkbox"
-                            id={`install-${wall.id}`}
-                            checked={!!wall.includeInstallation}
+                            type="number"
+                            placeholder="250"
+                            value={wall.height || ""}
                             onChange={(e) =>
                               updateWall(
                                 wall.id,
-                                "includeInstallation",
-                                e.target.checked,
+                                "height",
+                                Number.parseInt(e.target.value) || 0,
                               )
                             }
-                            className="rounded border-gray-300 text-black focus:ring-black w-3 h-3"
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
                           />
-                          <label
-                            htmlFor={`install-${wall.id}`}
-                            className="text-xs text-gray-700 cursor-pointer"
-                          >
-                            Desejo cotar instalação
-                          </label>
                         </div>
+                        <div>
+                          <label className="text-xs text-gray-500 mb-1 block">
+                            Largura (cm)
+                          </label>
+                          <input
+                            type="number"
+                            placeholder="300"
+                            value={wall.width || ""}
+                            onChange={(e) =>
+                              updateWall(
+                                wall.id,
+                                "width",
+                                Number.parseInt(e.target.value) || 0,
+                              )
+                            }
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-2 flex justify-between items-end border-t border-gray-100 mt-4">
+                      <div className="flex-1 mr-4 flex flex-col gap-3">
+                        {wall.product !== "sample_kit" && (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              id={`install-${wall.id}`}
+                              checked={!!wall.includeInstallation}
+                              onChange={(e) =>
+                                updateWall(
+                                  wall.id,
+                                  "includeInstallation",
+                                  e.target.checked,
+                                )
+                              }
+                              className="rounded border-gray-300 text-black focus:ring-black w-3 h-3"
+                            />
+                            <label
+                              htmlFor={`install-${wall.id}`}
+                              className="text-xs text-gray-700 cursor-pointer"
+                            >
+                              Desejo cotar instalação
+                            </label>
+                          </div>
+                        )}
 
                         <div>
                           <label
@@ -474,7 +505,9 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                         )}
                       </div>
 
-                      {(wall.height > 0 || wall.width > 0) && (
+                      {(wall.height > 0 ||
+                        wall.width > 0 ||
+                        wall.product === "sample_kit") && (
                         <div className="text-right">
                           <p className="text-xs text-gray-500">
                             Estimativa:{" "}
@@ -482,9 +515,11 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                               {formatCurrency(calculateWallPrice(wall))}
                             </span>
                           </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">
-                            (Inclui montagem e prova de cor)
-                          </p>
+                          {wall.product !== "sample_kit" && (
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              (Inclui montagem e prova de cor)
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -501,17 +536,20 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
               </div>
 
               {/* General Notes */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Observações Gerais
-                </label>
-                <textarea
-                  value={generalNotes}
-                  onChange={(e) => setGeneralNotes(e.target.value)}
-                  placeholder="Alguma observação específica sobre o projeto?"
-                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors min-h-[80px]"
-                />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Observações Gerais
+                  </label>
+                  <textarea
+                    value={generalNotes}
+                    onChange={(e) => setGeneralNotes(e.target.value)}
+                    placeholder="Alguma observação específica sobre o projeto?"
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors min-h-[80px]"
+                  />
+                </div>
               </div>
+
               {/* Total Summary */}
               {totalPrice > 0 && (
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
@@ -534,7 +572,11 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
-                  walls.some((w) => w.height > 0 && w.width > 0) && !isUploading
+                  walls.some(
+                    (w) =>
+                      (w.height > 0 && w.width > 0) ||
+                      w.product === "sample_kit",
+                  ) && !isUploading
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
                 }`}

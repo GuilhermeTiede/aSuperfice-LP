@@ -3,25 +3,35 @@
 import { motion } from "framer-motion";
 
 const materialImages = [
-  { src: "/Canvas-tela.webp", alt: "Textura da tela Canvas" },
-  { src: "/adesivo-blockout.webp", alt: "Acabamento adesivo blockout" },
-  { src: "/papel-algodao.webp", alt: "Textura papel algodão" },
-  { src: "/papel-areia.webp", alt: "Textura papel areia" },
-  { src: "/papel-linho.webp", alt: "Textura papel linho" },
-];
-
-const descriptions = [
   {
-    title: "Canvas Premium",
-    text: "Tecido 100% algodão com tratamento especial para reprodução de telas, garantindo profundidade cromática e durabilidade.",
+    src: "/Canvas-tela.webp",
+    alt: "Textura da tela Canvas",
+    label: "Canvas Premium",
   },
   {
-    title: "Substratos Wall Art",
-    text: "Bases texturizadas para papéis de parede que simulam linho, fibras naturais e tramas, transformando paredes em superfícies sensoriais.",
+    src: "/adesivo-blockout.webp",
+    alt: "Acabamento adesivo blockout",
+    label: "Adesivo Blockout Fosco",
   },
   {
-    title: "Adesivo Blockout Fosco",
-    text: "Coringa na decoração para ambientes de alta exposição ou para revestir móveis ou objetos decorativos.",
+    src: "/papel-algodao.webp",
+    alt: "Textura papel algodão",
+    label: "Substratos Wall Art",
+  },
+  {
+    src: "/papel-areia.webp",
+    alt: "Textura papel areia",
+    label: "Substratos Wall Art",
+  },
+  {
+    src: "/papel-linho.webp",
+    alt: "Textura papel linho",
+    label: "Substratos Wall Art",
+  },
+  {
+    src: "/papel-non-woven.webp",
+    alt: "Papel Non-woven",
+    label: "Substratos Wall Art",
   },
 ];
 
@@ -65,30 +75,13 @@ export function Materials() {
                 decoding="async"
                 className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-white text-lg font-serif font-medium tracking-wide">
+                  {img.label}
+                </span>
+              </div>
             </motion.div>
           ))}
-
-          {/* 6th block: Text */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="aspect-square bg-white p-6 flex flex-col justify-center border border-gray-100"
-          >
-            <div className="space-y-4 h-full flex flex-col justify-center">
-              {descriptions.map((desc, i) => (
-                <div key={i}>
-                  <h3 className="font-serif text-base mb-1 text-gray-900">
-                    {desc.title}
-                  </h3>
-                  <p className="text-xs text-gray-500 font-light leading-relaxed">
-                    {desc.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>

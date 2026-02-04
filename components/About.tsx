@@ -17,7 +17,7 @@ export function About() {
           >
             <Image
               src="/ambiente-atelie.webp"
-              alt="Ambiente do Ateliê de Impressão :: aSuperficie"
+              alt="Ambiente do Ateliê de Impressão | aSuperficie"
               fill
               className="object-cover hover:scale-105 transition-transform duration-700"
               loading="lazy"

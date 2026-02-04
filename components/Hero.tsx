@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
@@ -11,19 +10,18 @@ export function Hero() {
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden pt-20">
-      {/* Background com animação não-bloqueante */}
+      {/* Background Video com desfoque */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 animate-fade-in">
-          <Image
-            src="/bloco-inicial.webp"
-            alt="Textura Artística de Fundo"
-            fill
-            className="object-cover opacity-40 blur-sm"
-            priority
-            fetchPriority="high"
-            loading="eager"
-            sizes="100vw"
-          />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-40 blur-sm"
+          >
+            <source src="/hero_video/hero.webm" type="video/webm" />
+          </video>
         </div>
       </div>
 

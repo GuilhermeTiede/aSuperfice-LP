@@ -7,7 +7,7 @@ export function CallToAction() {
   const generateWhatsAppLink = () => {
     const phoneNumber = "+5521994408290";
     const message =
-      "Olá! Visitei o site Ateliê de Impressão :: aSuperficie e gostaria de agendar uma consultoria para meu projeto.";
+      "Olá! Visitei o site do Ateliê de Impressão da aSuperficie e gostaria de agendar uma consultoria para meu projeto.";
     const encodedMessage = encodeURIComponent(message);
     return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   };
