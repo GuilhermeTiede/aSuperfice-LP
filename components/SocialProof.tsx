@@ -18,7 +18,7 @@ interface InstagramPost {
 const MOCK_FEED = Array.from({ length: 8 }).map((_, i) => ({
   id: `mock-${i}`,
   mediaUrl: `/projetos_realizados/${(i % 12) + 1}.webp`,
-  permalink: "https://www.instagram.com/asuperficie/",
+  permalink: "https://www.instagram.com/ateliedeimpressao",
 }));
 
 // URL da API Externa (Exemplo: Behold.so, RapidAPI, etc)
@@ -64,13 +64,13 @@ export function SocialProof() {
             Quem Imprime com a gente
           </p>
           <a
-            href="https://www.instagram.com/asuperficie/"
+            href="https://www.instagram.com/ateliedeimpressao"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors"
           >
             <Instagram className="w-4 h-4" />
-            @asuperficie
+            @ateliedeimpressao
           </a>
         </div>
 
@@ -90,7 +90,7 @@ export function SocialProof() {
               {post.mediaUrl && (
                 <Image
                   src={post.mediaUrl}
-                  alt={post.caption || "Instagram post aSuperficie"}
+                  alt={post.caption || "Instagram post Ateliê de Impressão"}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   unoptimized={

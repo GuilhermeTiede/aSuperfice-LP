@@ -12,7 +12,7 @@ export function Footer() {
           <Link href="/" className="flex items-center gap-3 mb-6">
             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-800">
               <Image
-                src="/logo-asuperficie.webp"
+                src="/logo-ateliedeimpressao.webp"
                 alt="Ateliê de Impressão | aSuperficie"
                 fill
                 className="object-cover"

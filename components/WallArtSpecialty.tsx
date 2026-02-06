@@ -6,9 +6,143 @@ import { useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const TOTAL_IMAGES = 24;
-const projectImages = Array.from({ length: TOTAL_IMAGES }).map(
-  (_, i) => `/projetos_realizados/${i + 1}.webp`,
-);
+
+interface ProjectData {
+  id: number;
+  src: string;
+  title: string;
+  credits: string[];
+}
+
+const projectsDataRaw: Omit<ProjectData, "src">[] = [
+  {
+    id: 1,
+    title: "Impressão tela canvas sala jantar",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 2,
+    title: "Painel parede Loja Eva",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 3,
+    title: "Papel de parede toilet loja Eva",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 4,
+    title: "Papel de parede e gravuras loja LZ mini Ipanema",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 5,
+    title: "Impressão quadro Frida",
+    credits: ["@ella.lima", "@mangarosaarquitetura"],
+  },
+  {
+    id: 6,
+    title: "Painel parede Casa Design - Espaço living para estar",
+    credits: ["@ella.lima_", "@desireebruver"],
+  },
+  {
+    id: 7,
+    title: "Papel de parede Gaoli - Shopping Leblon",
+    credits: ["@gaoli.rio", "@mangarosaarquitetura"],
+  },
+  {
+    id: 8,
+    title: "Papel de parede nicho - Casa Cor 2022",
+    credits: ["@Giselapecego_studio", "@Diasbortolini"],
+  },
+  {
+    id: 9,
+    title: "Revestimento parede loja Reserva Mini",
+    credits: ["@mangarosaarquitetura"],
+  },
+  {
+    id: 10,
+    title: "Papéis de parede, adesivos - Loja LZ Mini",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 11,
+    title: "Papel de parede quarto",
+    credits: ["@atelier.oui"],
+  },
+  {
+    id: 12,
+    title: "Papel de parede lavabo loja Trama Casa",
+    credits: ["@mc_ilustrada", "@tramacasa"],
+  },
+  {
+    id: 13,
+    title: "Revestimento expositor loja Eva",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 14,
+    title: "Revestimento teto loja Eva",
+    credits: ["@ella.lima_", "@mangarosaarquitetura"],
+  },
+  {
+    id: 15,
+    title: "Revestimento adesivo laminado para Todeschini",
+    credits: ["@desireebruver"],
+  },
+  {
+    id: 16,
+    title: "Papel de parede e decalques vidros bistrô Amelie",
+    credits: ["@gruna.arquitetura"],
+  },
+  {
+    id: 17,
+    title: "Papéis de parede para Spa",
+    credits: ["@ella.lima"],
+  },
+  {
+    id: 18,
+    title: "Revestimento banheiro completo restaurante",
+    credits: ["@areia.arquitetura"],
+  },
+  {
+    id: 19,
+    title: "Painel parede hall entrada",
+    credits: ["@jade_ralmeida", "@marceloreisbraz"],
+  },
+  {
+    id: 20,
+    title: "Decalque texto hall entrada",
+    credits: ["@desireebruver"],
+  },
+  {
+    id: 21,
+    title: "Papel de parede quarto",
+    credits: ["@mtcsabino", "@glauciomoraes"],
+  },
+  {
+    id: 22,
+    title: "Papel de parede lavabo",
+    credits: ["@ella.lima", "Vieira Sampaio"],
+  },
+  {
+    id: 23,
+    title: "Instalação lavabo papel de parede Branco",
+    credits: ["@casadeanas"],
+  },
+  {
+    id: 24,
+    title: "Papel de parede hall entrada",
+    credits: ["@joaocavalcantiarq"],
+  },
+];
+
+const projectImages: ProjectData[] = projectsDataRaw
+  .map((data) => ({
+    ...data,
+    src: `/projetos_realizados/${data.id}.webp`,
+  }))
+  .reverse();
 
 export function WallArtSpecialty() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -123,12 +257,26 @@ export function WallArtSpecialty() {
                     }}
                   >
                     <Image
-                      src={projectImages[currentImageIndex]}
-                      alt={`Projeto realizado ${currentImageIndex + 1}`}
+                      src={projectImages[currentImageIndex].src}
+                      alt={projectImages[currentImageIndex].title}
                       fill
                       className="object-contain" // object-contain mantem proporção sem cortar
                       priority
                     />
+
+                    {/* Caption Overlay */}
+                    <div className="absolute unset bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8 flex flex-col items-center text-center">
+                      <h3 className="text-white text-xl md:text-2xl font-serif mb-2">
+                        {projectImages[currentImageIndex].title}
+                      </h3>
+                      <div className="flex flex-col md:flex-row gap-1 md:gap-4 text-white/70 text-sm md:text-base font-light">
+                        {projectImages[currentImageIndex].credits.map(
+                          (credit, idx) => (
+                            <span key={idx}>{credit}</span>
+                          ),
+                        )}
+                      </div>
+                    </div>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -141,7 +289,7 @@ export function WallArtSpecialty() {
               </button>
             </div>
 
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-light text-sm tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/10">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-light text-sm tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/10 hidden md:block">
               {currentImageIndex + 1} / {projectImages.length}
             </div>
           </motion.div>

@@ -14,7 +14,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-3 z-50">
           <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-gray-100 shadow-sm">
             <Image
-              src="/logo-asuperficie.webp"
+              src="/logo-ateliedeimpressao.webp"
               alt="Ateliê de Impressão | aSuperficie"
               fill
               className="object-cover"
