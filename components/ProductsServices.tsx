@@ -24,34 +24,34 @@ const portfolio = [
   {
     category: "Produtos",
     description:
-      "Substratos de alta performance para impressão de altíssima qualidade",
+      "Materiais com tramas, fibras naturais ou sintéticos tratados para receberem pigmentos de cores com vivacidade e alta resolução.",
     items: [
       {
         icon: Frame,
-        title: "Canvas p/ Telas",
+        title: "Canvas",
         description:
-          "Tecido 100% algodão com tratamento especial para reprodução de alta fidelidade, para quadros e obras de arte.",
+          "Tecido 100% algodão com tratamento especial para reprodução decorativa de alta vivacidade, para quadros e obras de arte.",
         image: "/projetos_e_servicos/produtos/quadros.webp",
       },
       {
         icon: Scroll,
-        title: "Papel de Parede",
+        title: "Papel de Parede Personalizado",
         description:
-          "Personalização completa de ambientes com texturas exclusivas (Linho, Areia, Algodão).",
+          "Personalização completa de ambientes com papéis texturizados exclusivos (linho, areia, algodão). Murais panorâmicos e artes decorativas para interiores.",
         image: "/projetos_e_servicos/produtos/papel de parede.webp",
       },
       {
         icon: Palette,
-        title: "Adesivo Vinílico",
+        title: "Adesivos",
         description:
-          "Soluções versáteis para sinalização, decoração de vidros e superfícies lisas.",
+          "Materiais adequados para cada projeto, soluções como blockout fosco para revestimento de paredes sem emendas visíveis, os translúcidos e para decoração de vidros e os vinis Cast para envelopamento de objetos.",
         image: "/projetos_e_servicos/produtos/adesivos.webp",
       },
       {
         icon: Printer,
-        title: "Gravuras & Posters",
+        title: "Gravuras e Posters",
         description:
-          "Impressões em diversos formatos e substratos para composições de quadros.",
+          "Impressões de gravuras em papéis de algodão ou posters em adesivo vinílico fosco, ideal para composição de quadros em projetos de decoração.",
         image: "/projetos_e_servicos/produtos/gravuras.webp",
       },
     ],
@@ -61,31 +61,31 @@ const portfolio = [
     description: "Expertise técnica do arquivo à instalação",
     items: [
       {
+        icon: MonitorCheck,
+        title: "Pré-impressão & Ajustes Técnicos",
+        description:
+          "Análise e preparação de arquivos — avaliação de tamanho, escala, qualidade, cor, sangria e recortes para garantir o melhor resultado.",
+        image: "/projetos_e_servicos/servicos/pre-impressao-ajustes.webp",
+      },
+      {
         icon: Hammer,
         title: "Instalação Especializada",
         description:
-          "Equipe própria treinada para aplicação perfeita de papéis e adesivos.",
+          "Aplicação precisa por equipe treinada. Quando o projeto exige, a instalação faz toda a diferença no resultado final.",
         image: "/projetos_e_servicos/servicos/instalacao-especializada.webp",
-      },
-      {
-        icon: MonitorCheck,
-        title: "Pré-impressão & Ajustes",
-        description:
-          "Análise crítica de arquivos, montagem dos planos de corte e prova de cores para garantir o resultado esperado.",
-        image: "/projetos_e_servicos/servicos/pre-impressao-ajustes.webp",
       },
       {
         icon: MessageSquareText,
         title: "Consultoria Técnica",
         description:
-          "Apoio na especificação de materiais para arquitetos e designers de interiores.",
+          "Apoio em especificação para projetos complexos — orientação em materiais, acabamentos e processos para arquitetos e designers de interiores.",
         image: "/projetos_e_servicos/servicos/consultoria-tecnica.webp",
       },
       {
         icon: PencilRuler,
-        title: "Projetos Especiais & Corporativos",
+        title: "Projetos Corporativos & Empresariais",
         description:
-          "Desenvolvimento de soluções sob medida para demandas complexas de arquitetura.",
+          "Soluções sob medida para demandas exigentes: grandes metragens, prazos coordenados com obra e consistência em múltiplos ambientes.",
         image: "/projetos_e_servicos/servicos/projetos-especiais.webp",
       },
     ],
@@ -103,12 +103,13 @@ export function ProductsServices() {
             O Que Oferecemos
           </span>
           <h2 className="text-5xl md:text-6xl font-serif text-gray-900 mb-6">
-            Soluções Completas em Impressão <br className="hidden md:block" /> e
-            Decoração
+            Soluções de Impressão <br className="hidden md:block" /> &
+            Decoração Premium
           </h2>
           <p className="text-gray-600 font-light text-lg">
-            Unimos tecnologia de ponta e acabamento artesanal para entregar
-            resultados que superam as expectativas de criativos exigentes.
+            Transformamos suas superfícies com tecnologia de ponta e acabamento
+            artesanal. Tudo com consultoria técnica e acabamento compatível com
+            projetos de alto padrão.
           </p>
         </div>
 
@@ -181,11 +182,15 @@ export function ProductsServices() {
         </div>
 
         <div className="mt-20 text-center">
+          <p className="text-gray-500 font-light text-lg mb-8 max-w-2xl mx-auto">
+            Cada etapa é pensada para garantir qualidade, consistência e impacto
+            visual em aplicações residenciais e comerciais.
+          </p>
           <button
             onClick={() => setIsCalculatorOpen(true)}
             className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none"
           >
-            Fale com um Especialista
+            Solicitar Orçamento
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
