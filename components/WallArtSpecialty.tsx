@@ -3,9 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
-
-const TOTAL_IMAGES = 24;
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 interface ProjectData {
   id: number;

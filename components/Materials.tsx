@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const materialImages = [
   {
@@ -71,12 +72,11 @@ export function Materials() {
               transition={{ delay: idx * 0.1 }}
               className="aspect-square bg-gray-200 relative overflow-hidden group border border-gray-100"
             >
-              <img
+              <Image
                 src={img.src}
                 alt={img.alt}
-                loading="lazy"
-                decoding="async"
-                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <span className="text-white text-lg font-serif font-medium tracking-wide">

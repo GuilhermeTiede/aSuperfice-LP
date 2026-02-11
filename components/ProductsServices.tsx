@@ -5,17 +5,14 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Printer,
-  Layers,
   Palette,
   Frame,
   Scroll,
   Hammer,
   MonitorCheck,
   MessageSquareText,
-  Ruler, // Substituindo PencilRuler por Ruler que é mais comum ou manter PencilRuler se existir
   PencilRuler,
   ArrowRight,
-  CheckCircle2,
 } from "lucide-react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
 import { cn } from "@/lib/utils";
@@ -114,7 +111,7 @@ export function ProductsServices() {
         </div>
 
         <div className="space-y-24">
-          {portfolio.map((group, idx) => (
+          {portfolio.map((group) => (
             <div key={group.category}>
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-gray-200 pb-6 gap-4">
                 <div>

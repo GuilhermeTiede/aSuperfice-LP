@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Plus,
   Trash2,
@@ -251,12 +251,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     if (file.type.includes("pdf") || file.type.includes("document"))
       return <FileText className="w-4 h-4" />;
     return <File className="w-4 h-4" />;
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
   const generateWhatsAppMessage = () => {

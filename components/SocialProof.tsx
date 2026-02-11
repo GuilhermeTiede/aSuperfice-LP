@@ -42,11 +42,11 @@ export function SocialProof() {
 
         // Adaptador simples para garantir que os dados venham no formato certo
         // Dependendo da API escolhida, pode ser necessário ajustar o mapeamento abaixo
-        const formattedData = data.map((item: any) => ({
-          id: item.id,
-          mediaUrl: item.mediaUrl || item.media_url || item.url, // Tenta diferentes formatos comuns
-          permalink: item.permalink || item.link,
-          caption: item.caption,
+        const formattedData = data.map((item: InstagramPost | Record<string, unknown>) => ({
+          id: typeof item === 'object' && item !== null && 'id' in item ? String(item.id) : '',
+          mediaUrl: (typeof item === 'object' && item !== null && ('mediaUrl' in item ? String(item.mediaUrl) : 'media_url' in item ? String(item.media_url) : 'url' in item ? String(item.url) : '')),
+          permalink: (typeof item === 'object' && item !== null && ('permalink' in item ? String(item.permalink) : 'link' in item ? String(item.link) : '')),
+          caption: typeof item === 'object' && item !== null && 'caption' in item ? String(item.caption) : undefined,
         }));
 
         setFeed(formattedData.slice(0, 8)); // Pega apenas os 8 primeiros
