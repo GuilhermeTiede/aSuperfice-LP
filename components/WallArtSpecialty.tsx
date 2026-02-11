@@ -3,9 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
-
-const TOTAL_IMAGES = 24;
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 interface ProjectData {
   id: number;
@@ -145,16 +143,20 @@ const projectImages: ProjectData[] = projectsDataRaw
   .reverse();
 
 export function WallArtSpecialty() {
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null,
+  );
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % projectImages.length);
+    setSelectedImageIndex(
+      (prev) => ((prev ?? 0) + 1) % projectImages.length,
+    );
   };
 
   const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + projectImages.length) % projectImages.length,
+    setSelectedImageIndex(
+      (prev) =>
+        ((prev ?? 0) - 1 + projectImages.length) % projectImages.length,
     );
   };
 
@@ -188,6 +190,7 @@ export function WallArtSpecialty() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          className="w-full"
         >
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-6 block">
             Especialidade
@@ -195,24 +198,48 @@ export function WallArtSpecialty() {
           <h2 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-10 leading-tight">
             Wall Art <br /> Imersiva
           </h2>
-          <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed mb-12">
+          <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed mb-16">
             Somos especialistas em impressão em larga escala que materializa a
             visão do projeto. Nossa tecnologia permite ambientes imersivos
             perfeitos, transformando superfícies arquitetônicas em elementos de
             design exclusivos.
           </p>
 
-          <button
-            onClick={() => setIsGalleryOpen(!isGalleryOpen)}
-            className="border border-white/30 px-10 py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 mb-8"
-          >
-            {isGalleryOpen ? "Fechar Projetos" : "Ver Projetos"}
-          </button>
+          {/* Gallery Grid */}
+          <div className="mt-12 w-full max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {projectImages.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="relative aspect-[3/4] group cursor-pointer overflow-hidden rounded-sm"
+                  onClick={() => setSelectedImageIndex(index)}
+                >
+                  <Image
+                    src={project.src}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <p className="text-white text-sm font-light line-clamp-2">
+                      {project.title}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </div>
 
+      {/* Fullscreen Modal */}
       <AnimatePresence>
-        {isGalleryOpen && (
+        {selectedImageIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -220,7 +247,7 @@ export function WallArtSpecialty() {
             className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
           >
             <button
-              onClick={() => setIsGalleryOpen(false)}
+              onClick={() => setSelectedImageIndex(null)}
               className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110] p-2"
             >
               <X className="w-8 h-8" />
@@ -237,7 +264,7 @@ export function WallArtSpecialty() {
               <div className="w-full h-full relative flex items-center justify-center">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={currentImageIndex}
+                    key={selectedImageIndex}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -257,20 +284,20 @@ export function WallArtSpecialty() {
                     }}
                   >
                     <Image
-                      src={projectImages[currentImageIndex].src}
-                      alt={projectImages[currentImageIndex].title}
+                      src={projectImages[selectedImageIndex].src}
+                      alt={projectImages[selectedImageIndex].title}
                       fill
-                      className="object-contain" // object-contain mantem proporção sem cortar
+                      className="object-contain"
                       priority
                     />
 
                     {/* Caption Overlay */}
-                    <div className="absolute unset bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8 flex flex-col items-center text-center">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8 flex flex-col items-center text-center">
                       <h3 className="text-white text-xl md:text-2xl font-serif mb-2">
-                        {projectImages[currentImageIndex].title}
+                        {projectImages[selectedImageIndex].title}
                       </h3>
                       <div className="flex flex-col md:flex-row gap-1 md:gap-4 text-white/70 text-sm md:text-base font-light">
-                        {projectImages[currentImageIndex].credits.map(
+                        {projectImages[selectedImageIndex].credits.map(
                           (credit, idx) => (
                             <span key={idx}>{credit}</span>
                           ),
@@ -290,7 +317,7 @@ export function WallArtSpecialty() {
             </div>
 
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-light text-sm tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/10 hidden md:block">
-              {currentImageIndex + 1} / {projectImages.length}
+              {selectedImageIndex + 1} / {projectImages.length}
             </div>
           </motion.div>
         )}
