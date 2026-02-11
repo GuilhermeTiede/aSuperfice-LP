@@ -41,16 +41,16 @@ export function CallToAction() {
             className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-none"
           >
             <MessageCircle className="w-5 h-5" />
-            Enviar Arquivo para Avaliação
+            Fale pelo Whatsapp
           </Link>
         </div>
         <p className="mt-6 text-sm text-gray-400">
           Ou envie um email para{" "}
           <a
-            href="mailto:contato@asuperficie.com.br"
+            href="mailto:ateliedeimpressao@asuperficie.com"
             className="underline hover:text-black"
           >
-            contato@asuperficie.com.br
+            ateliedeimpressao@asuperficie.com
           </a>
         </p>
       </div>

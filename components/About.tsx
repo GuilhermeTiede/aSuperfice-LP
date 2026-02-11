@@ -47,10 +47,10 @@ export function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-6 block">
                 O que é o Ateliê de Impressão?
               </span>
-              <h2 className="text-4xl md:text-5xl font-serif mb-8 text-gray-900 font-medium">
+              <h2 className="text-5xl md:text-7xl lg:text-7xl font-serif mb-10 leading-tight text-gray-900">
                 Um ateliê técnico para quem precisa de resultado impecável
               </h2>
               <div className="space-y-6 text-gray-600 font-light leading-relaxed text-lg">

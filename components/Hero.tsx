@@ -44,17 +44,6 @@ export function Hero() {
             </button>
           </div>
 
-          <div className="mt-12 flex justify-center">
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-gray-800 font-medium tracking-wide py-3 px-8 bg-white/60 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-sm">
-              <span>Materiais selecionados</span>
-              <span className="hidden md:inline text-gray-400">•</span>
-              <span>Tintas premium</span>
-              <span className="hidden md:inline text-gray-400">•</span>
-              <span>Alta resolução</span>
-              <span className="hidden md:inline text-gray-400">•</span>
-              <span>Instalação especializada</span>
-            </div>
-          </div>
         </div>
       </div>
 

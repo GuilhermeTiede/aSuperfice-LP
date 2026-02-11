@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-const TOTAL_IMAGES = 24;
+const TOTAL_IMAGES = 37;
 
 interface ProjectData {
   id: number;
@@ -135,6 +135,71 @@ const projectsDataRaw: Omit<ProjectData, "src">[] = [
     title: "Papel de parede hall entrada",
     credits: ["@joaocavalcantiarq"],
   },
+  {
+    id: 25,
+    title: "Adesivo transparente Espaço Fitness II",
+    credits: ["@vieirasampaiovs"],
+  },
+  {
+    id: 26,
+    title: "Mural ilustracao infantil",
+    credits: ["@gava.arquitetura"],
+  },
+  {
+    id: 27,
+    title: "Painel e revestimento portas NBA",
+    credits: ["@morschwilkinson"],
+  },
+  {
+    id: 28,
+    title: "Painel fotografico adesivo Bistro",
+    credits: [],
+  },
+  {
+    id: 29,
+    title: "Painel parede adesivo",
+    credits: [],
+  },
+  {
+    id: 30,
+    title: "Papel de parede Brinquedoteca",
+    credits: ["@areia.arquitetura"],
+  },
+  {
+    id: 31,
+    title: "Papel de parede Quarto",
+    credits: ["@nahca_arquitetura"],
+  },
+  {
+    id: 32,
+    title: "Papel de parede Spa",
+    credits: ["@ella.lima_"],
+  },
+  {
+    id: 33,
+    title: "Papel de parede e adesivos",
+    credits: ["@vieirasampaiovs"],
+  },
+  {
+    id: 34,
+    title: "Papel de parede lavabo",
+    credits: ["@vieirasampaiovs"],
+  },
+  {
+    id: 35,
+    title: "Papel de parede, sinalização e revestimento de móveis",
+    credits: ["@jaderesende"],
+  },
+  {
+    id: 36,
+    title: "Papel parede Escritorio",
+    credits: [],
+  },
+  {
+    id: 37,
+    title: "quadro com papel de parede Casa Design",
+    credits: ["@ella.lima_"],
+  },
 ];
 
 const projectImages: ProjectData[] = projectsDataRaw
@@ -145,7 +210,6 @@ const projectImages: ProjectData[] = projectsDataRaw
   .reverse();
 
 export function WallArtSpecialty() {
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const nextImage = () => {
@@ -188,6 +252,7 @@ export function WallArtSpecialty() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          className="mb-12"
         >
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-6 block">
             Especialidade
@@ -195,106 +260,94 @@ export function WallArtSpecialty() {
           <h2 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-10 leading-tight">
             Wall Art <br /> Imersiva
           </h2>
-          <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed mb-12">
+          <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed">
             Especialistas em impressão de grande formato para murais panorâmicos
             e superfícies arquitetônicas. Nossa tecnologia permite ambientes
             imersivos perfeitos — do papel de parede personalizado a grandes
             painéis corporativos.
           </p>
+        </motion.div>
+
+        {/* Inline Gallery */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative w-full max-w-6xl h-[60vh] md:h-[80vh] bg-black/40 rounded-xl overflow-hidden border border-white/10 backdrop-blur-sm shadow-2xl"
+        >
+          <button
+            onClick={prevImage}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
+            aria-label="Projeto Anterior"
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </button>
+
+          <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentImageIndex}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="relative w-full h-full"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = swipePower(offset.x, velocity.x);
+
+                  if (swipe < -swipeConfidenceThreshold) {
+                    nextImage();
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    prevImage();
+                  }
+                }}
+              >
+                <Image
+                  src={projectImages[currentImageIndex].src}
+                  alt={projectImages[currentImageIndex].title}
+                  fill
+                  className="object-contain"
+                  priority
+                  draggable={false}
+                />
+
+                {/* Caption Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-20 pb-8 px-6 flex flex-col items-center text-center pointer-events-none">
+                  <h3 className="text-white text-xl md:text-3xl font-serif mb-2 drop-shadow-lg">
+                    {projectImages[currentImageIndex].title}
+                  </h3>
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 text-white/80 text-sm md:text-base font-light">
+                    {projectImages[currentImageIndex].credits.map(
+                      (credit, idx) => (
+                        <span key={idx} className="bg-white/10 px-3 py-1 rounded-full">
+                          {credit}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
           <button
-            onClick={() => setIsGalleryOpen(!isGalleryOpen)}
-            className="border border-white/30 px-10 py-4 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 mb-8"
+            onClick={nextImage}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
+            aria-label="Próximo Projeto"
           >
-            {isGalleryOpen ? "Fechar Projetos" : "Ver Projetos"}
+            <ChevronRight className="w-8 h-8" />
           </button>
+
+          {/* Counter */}
+          <div className="absolute top-6 right-6 z-20 bg-black/60 px-4 py-2 rounded-full text-xs font-bold tracking-widest border border-white/10 text-white/90">
+            {currentImageIndex + 1} / {projectImages.length}
+          </div>
         </motion.div>
       </div>
-
-      <AnimatePresence>
-        {isGalleryOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
-          >
-            <button
-              onClick={() => setIsGalleryOpen(false)}
-              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[110] p-2"
-            >
-              <X className="w-8 h-8" />
-            </button>
-
-            <div className="relative w-full max-w-6xl h-[80vh] flex items-center justify-center">
-              <button
-                onClick={prevImage}
-                className="absolute left-0 md:-left-12 z-10 p-4 text-white/50 hover:text-white transition-colors hover:bg-white/10 rounded-full"
-              >
-                <ChevronLeft className="w-8 h-8 md:w-10 md:h-10" />
-              </button>
-
-              <div className="w-full h-full relative flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentImageIndex}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative w-full h-full"
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={1}
-                    onDragEnd={(e, { offset, velocity }) => {
-                      const swipe = swipePower(offset.x, velocity.x);
-
-                      if (swipe < -swipeConfidenceThreshold) {
-                        nextImage();
-                      } else if (swipe > swipeConfidenceThreshold) {
-                        prevImage();
-                      }
-                    }}
-                  >
-                    <Image
-                      src={projectImages[currentImageIndex].src}
-                      alt={projectImages[currentImageIndex].title}
-                      fill
-                      className="object-contain" // object-contain mantem proporção sem cortar
-                      priority
-                    />
-
-                    {/* Caption Overlay */}
-                    <div className="absolute unset bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8 flex flex-col items-center text-center">
-                      <h3 className="text-white text-xl md:text-2xl font-serif mb-2">
-                        {projectImages[currentImageIndex].title}
-                      </h3>
-                      <div className="flex flex-col md:flex-row gap-1 md:gap-4 text-white/70 text-sm md:text-base font-light">
-                        {projectImages[currentImageIndex].credits.map(
-                          (credit, idx) => (
-                            <span key={idx}>{credit}</span>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <button
-                onClick={nextImage}
-                className="absolute right-0 md:-right-12 z-10 p-4 text-white/50 hover:text-white transition-colors hover:bg-white/10 rounded-full"
-              >
-                <ChevronRight className="w-8 h-8 md:w-10 md:h-10" />
-              </button>
-            </div>
-
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 font-light text-sm tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/10 hidden md:block">
-              {currentImageIndex + 1} / {projectImages.length}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

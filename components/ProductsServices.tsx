@@ -44,7 +44,7 @@ const portfolio = [
         icon: Palette,
         title: "Adesivos",
         description:
-          "Materiais adequados para cada projeto, soluções como blockout fosco para revestimento de paredes sem emendas visíveis, os translúcidos e para decoração de vidros e os vinis Cast para envelopamento de objetos.",
+          "Soluções adequadas para cada projeto: blockout fosco para revestimento sem emendas visíveis; translúcidos para decoração de vidros e os Casts para envelopamento de objetos.",
         image: "/projetos_e_servicos/produtos/adesivos.webp",
       },
       {
@@ -117,13 +117,13 @@ export function ProductsServices() {
           {portfolio.map((group, idx) => (
             <div key={group.category}>
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-gray-200 pb-6 gap-4">
-                <div>
-                  <h3 className="text-4xl font-serif text-gray-900 mb-2 font-medium">
+                <div className="md:w-full">
+                  <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-2 block">
                     {group.category}
-                  </h3>
-                  <p className="text-gray-500 text-lg font-light max-w-xl">
+                  </span>
+                  <h3 className="text-4xl md:text-5xl font-serif text-gray-900 mb-4 font-medium leading-tight">
                     {group.description}
-                  </p>
+                  </h3>
                 </div>
               </div>
 

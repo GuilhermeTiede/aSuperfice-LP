@@ -53,8 +53,9 @@ export function CorporateProjects() {
               ))}
             </ul>
 
-            <div className="border-l-2 border-gray-900 pl-6 py-2 mb-10">
-              <p className="text-xl font-serif italic text-gray-800 leading-relaxed">
+            <div className="bg-gray-900 text-white p-8 mb-10 border border-gray-800 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
+               <p className="text-xl md:text-2xl font-serif italic leading-relaxed relative z-10">
                 &ldquo;Se o projeto é complexo, a execução precisa ser
                 precisa.&rdquo;
               </p>
