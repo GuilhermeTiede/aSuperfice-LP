@@ -27,6 +27,9 @@ const MOCK_FEED = Array.from({ length: 8 }).map((_, i) => ({
 const INSTAGRAM_API_URL = ""; // Coloque a URL do feed JSON aqui
 
 export function SocialProof() {
+  // Componente temporariamente oculto conforme solicitado
+  return null;
+
   const [feed, setFeed] = useState<InstagramPost[]>(MOCK_FEED);
 
   useEffect(() => {
@@ -61,7 +64,11 @@ export function SocialProof() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center justify-center mb-12 space-y-4">
           <p className="text-center text-xs uppercase tracking-[0.2em] text-gray-400">
-            Quem Imprime com a gente
+            Quem Imprime com a Gente
+          </p>
+          <p className="text-center text-gray-500 font-light text-sm max-w-lg">
+            Arquitetos, estúdios e clientes que buscam resultado acima da média
+            escolhem o Ateliê de Impressão pela segurança técnica e padrão de acabamento.
           </p>
           <a
             href="https://www.instagram.com/ateliedeimpressao"

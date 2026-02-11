@@ -3,74 +3,139 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+const audiences = [
+  {
+    title: "Para arquitetos e interiores",
+  },
+  {
+    title: "Para designers e estúdios criativos",
+  },
+  {
+    title: "Para artistas e ilustradores",
+  },
+  {
+    title: "Para empresas e marcas",
+  },
+];
+
 export function About() {
   return (
-    <section id="about" className="py-24 md:py-32 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative aspect-[3/4] md:aspect-square bg-gray-100 overflow-hidden"
-          >
-            <Image
-              src="/ambiente-atelie.webp"
-              alt="Ambiente do Ateliê de Impressão | aSuperficie"
-              fill
-              className="object-cover hover:scale-105 transition-transform duration-700"
-              loading="lazy"
-            />
-          </motion.div>
+    <>
+      <section id="about" className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-6">
+          {/* O que é o Ateliê */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative aspect-[3/4] md:aspect-square bg-gray-100 overflow-hidden"
+            >
+              <Image
+                src="/ambiente-atelie.webp"
+                alt="Ateliê de Impressão aSuperfície — consultoria técnica para impressão premium"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              />
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-gray-900 font-medium">
-              O Conceito do Ateliê
-            </h2>
-            <div className="space-y-6 text-gray-600 font-light leading-relaxed text-lg">
-              <p>
-                Somos mais que um estúdio de impressão; somos uma consultoria
-                técnico-artística dedicada à perfeição do design de superfície.
-                Nossa abordagem une a criatividade digital à materialidade
-                tangível.
-              </p>
-              <p>
-                Trabalhando em estreita colaboração com arquitetos, artistas e
-                designers, curamos substratos específicos que ampliam a
-                narrativa de cada projeto. Da textura do papel à profundidade da
-                tinta, cada detalhe é calibrado para evocar emoção e
-                sofisticação.
-              </p>
-            </div>
-
-            <div className="mt-10 grid grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-serif mb-2 text-gray-900">
-                  Curadoria
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Orientação especializada em seleção de materiais e
-                  acabamentos.
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+                O que é o Ateliê de Impressão?
+              </span>
+              <h2 className="text-4xl md:text-5xl font-serif mb-8 text-gray-900 font-medium">
+                Um ateliê técnico para quem precisa de resultado impecável
+              </h2>
+              <div className="space-y-6 text-gray-600 font-light leading-relaxed text-lg">
+                <p>
+                  O Ateliê de Impressão da aSuperfície é um serviço especializado
+                  em impressão premium para decoração, arte e superfícies
+                  arquitetônicas.
+                </p>
+                <p>
+                  Aqui, você não &quot;só imprime&quot;: você conta com um time
+                  que entende projeto, escala, material, aplicação e resultado
+                  final. Somos uma consultoria técnico-artística que acompanha o
+                  processo do arquivo à instalação.
                 </p>
               </div>
-              <div>
-                <h3 className="text-xl font-serif mb-2 text-gray-900">
-                  Precisão
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Tecnologia de impressão de alta resolução e durabilidade.
-                </p>
+
+              <div className="mt-10 grid grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-serif mb-2 text-gray-900">
+                    Consultoria Técnica
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Suporte completo desde a análise de arquivo até a execução
+                    final.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif mb-2 text-gray-900">
+                    Tecnologia
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Impressão ECO certificada de alta resolução e durabilidade.
+                  </p>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Para quem é */}
+      <section className="relative py-24 md:py-32 bg-gray-900 text-white overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/para_quem.webp"
+            alt="Decor"
+            fill
+            className="object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 max-w-4xl"
+          >
+            <span className="text-sm uppercase tracking-[0.2em] text-white/70 mb-4 block font-bold">
+              Para quem é
+            </span>
+            <h2 className="text-5xl md:text-7xl font-serif font-medium text-white">
+              Feito para profissionais exigentes
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {audiences.map((item, idx) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="p-8 border border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-500"
+              >
+                <h3 className="text-xl font-serif font-medium text-white text-center">
+                  {item.title}
+                </h3>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -196,10 +196,10 @@ export function WallArtSpecialty() {
             Wall Art <br /> Imersiva
           </h2>
           <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed mb-12">
-            Somos especialistas em impressão em larga escala que materializa a
-            visão do projeto. Nossa tecnologia permite ambientes imersivos
-            perfeitos, transformando superfícies arquitetônicas em elementos de
-            design exclusivos.
+            Especialistas em impressão de grande formato para murais panorâmicos
+            e superfícies arquitetônicas. Nossa tecnologia permite ambientes
+            imersivos perfeitos — do papel de parede personalizado a grandes
+            painéis corporativos.
           </p>
 
           <button
