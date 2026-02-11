@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const materialImages = [
   {
@@ -46,15 +47,18 @@ export function Materials() {
           className="mb-16 md:mb-24 text-center max-w-3xl mx-auto"
         >
           <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
-            Materialidade
+            Materiais
           </span>
           <h2 className="text-5xl md:text-6xl font-serif mb-6 font-medium">
-            Substratos e Texturas
+            Resultados com um toque de sofisticação
           </h2>
           <p className="text-gray-600 font-light text-lg">
-            Oferecemos uma seleção exclusiva de superfícies imprimíveis,
-            escolhidas por sua capacidade de reter tinta e luz de maneiras
-            únicas.
+            Pesquisamos e importamos materiais com tramas e texturas de toda
+            parte do mundo. Trabalhamos com materiais especiais testados e
+            homologados para receber tintas látex com alta resistência a
+            arranhões e desbotamento. Investimos na seleção do que existe de
+            melhor para entregarmos um resultado sensorial de cor, nitidez,
+            durabilidade e sofisticação em escala.
           </p>
         </motion.div>
 
@@ -68,12 +72,11 @@ export function Materials() {
               transition={{ delay: idx * 0.1 }}
               className="aspect-square bg-gray-200 relative overflow-hidden group border border-gray-100"
             >
-              <img
+              <Image
                 src={img.src}
                 alt={img.alt}
-                loading="lazy"
-                decoding="async"
-                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <span className="text-white text-lg font-serif font-medium tracking-wide">

@@ -27,6 +27,9 @@ const MOCK_FEED = Array.from({ length: 8 }).map((_, i) => ({
 const INSTAGRAM_API_URL = ""; // Coloque a URL do feed JSON aqui
 
 export function SocialProof() {
+  // Componente temporariamente oculto conforme solicitado
+  return null;
+
   const [feed, setFeed] = useState<InstagramPost[]>(MOCK_FEED);
 
   useEffect(() => {
@@ -37,13 +40,24 @@ export function SocialProof() {
         const response = await fetch(INSTAGRAM_API_URL);
         const data = await response.json();
 
+        // Helper function to safely extract string value from object
+        const getString = (obj: unknown, ...keys: string[]): string => {
+          if (typeof obj !== 'object' || obj === null) return '';
+          for (const key of keys) {
+            if (key in obj && obj[key as keyof typeof obj]) {
+              return String(obj[key as keyof typeof obj]);
+            }
+          }
+          return '';
+        };
+
         // Adaptador simples para garantir que os dados venham no formato certo
         // Dependendo da API escolhida, pode ser necessário ajustar o mapeamento abaixo
-        const formattedData = data.map((item: any) => ({
-          id: item.id,
-          mediaUrl: item.mediaUrl || item.media_url || item.url, // Tenta diferentes formatos comuns
-          permalink: item.permalink || item.link,
-          caption: item.caption,
+        const formattedData = data.map((item: InstagramPost | Record<string, unknown>) => ({
+          id: getString(item, 'id'),
+          mediaUrl: getString(item, 'mediaUrl', 'media_url', 'url'),
+          permalink: getString(item, 'permalink', 'link'),
+          caption: getString(item, 'caption') || undefined,
         }));
 
         setFeed(formattedData.slice(0, 8)); // Pega apenas os 8 primeiros
@@ -61,7 +75,11 @@ export function SocialProof() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center justify-center mb-12 space-y-4">
           <p className="text-center text-xs uppercase tracking-[0.2em] text-gray-400">
-            Quem Imprime com a gente
+            Quem Imprime com a Gente
+          </p>
+          <p className="text-center text-gray-500 font-light text-sm max-w-lg">
+            Arquitetos, estúdios e clientes que buscam resultado acima da média
+            escolhem o Ateliê de Impressão pela segurança técnica e padrão de acabamento.
           </p>
           <a
             href="https://www.instagram.com/ateliedeimpressao"

@@ -18,9 +18,27 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Ateliê de Impressão | aSuperficie - Impressão Artística Premium",
+  title: "Impressão de Grande Formato | Ateliê de Impressão aSuperfície",
   description:
-    "Estúdio de impressão artística de alto padrão para Wall Art e superfícies arquitetônicas.",
+    "Impressão de grande formato para arquitetos, designers e artistas. Papel de parede personalizado, murais panorâmicos e soluções corporativas com materiais premium, fidelidade de cor e suporte técnico.",
+  keywords: [
+    "impressão grande formato",
+    "impressão para arquitetos",
+    "papel de parede personalizado",
+    "murais panorâmicos",
+    "impressão premium",
+    "impressão para decoração",
+    "impressão corporativa",
+    "wall art",
+    "superfícies arquitetônicas",
+  ],
+  openGraph: {
+    title: "Impressão de Grande Formato | Ateliê de Impressão aSuperfície",
+    description:
+      "Impressão de grande formato e soluções premium para arquitetos, designers e artistas. Consultoria técnica, materiais selecionados e acabamento excepcional.",
+    type: "website",
+    locale: "pt_BR",
+  },
 };
 
 // CSS crítico inline para renderização inicial (above-the-fold)

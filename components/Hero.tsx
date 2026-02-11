@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
@@ -28,16 +27,11 @@ export function Hero() {
       {/* Conteúdo principal - renderizado imediatamente para LCP */}
       <div className="container mx-auto px-6 relative z-10 text-center">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <span className="block text-xs md:text-sm tracking-[0.2em] text-gray-500 uppercase mb-6">
-            Impressão de Grande Formato e Consultoria
-          </span>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-tight text-gray-900 mb-8">
-            Elevando Superfícies <br /> à Arte
+            Impressão de Artes em <br /> Grande Formato
           </h1>
           <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-            Especializados em impressão de grande formato e decoração de
-            superfícies arquitetônicas. Transformamos espaços com substratos
-            texturizados premium e qualidade intransigente.
+            Um ateliê para Artistas, Designers e Arquitetos. Transformamos arte digital em superfícies reais com fidelidade de cor, acabamento premium e suporte técnico do início ao fim.
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
@@ -45,15 +39,21 @@ export function Hero() {
               onClick={() => setIsCalculatorOpen(true)}
               className="group bg-black text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none"
             >
-              Inicie seu Projeto
+              Solicitar Orçamento
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
-            <Link
-              href="#materials"
-              className="group px-8 py-4 text-sm uppercase tracking-widest border border-gray-300 hover:border-black transition-colors rounded-none"
-            >
-              Explorar Materiais
-            </Link>
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-gray-800 font-medium tracking-wide py-3 px-8 bg-white/60 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-sm">
+              <span>Materiais selecionados</span>
+              <span className="hidden md:inline text-gray-400">•</span>
+              <span>Tintas premium</span>
+              <span className="hidden md:inline text-gray-400">•</span>
+              <span>Alta resolução</span>
+              <span className="hidden md:inline text-gray-400">•</span>
+              <span>Instalação especializada</span>
+            </div>
           </div>
         </div>
       </div>

@@ -27,8 +27,9 @@ export function Footer() {
             </span>
           </Link>
           <p className="text-gray-400 font-light max-w-sm mb-8">
-            Estúdio de impressão de grande formato e consultoria técnica para
-            arquitetos e designers de interiores.
+            Impressão de grande formato para arquitetos, designers e
+            artistas. Consultoria técnica, materiais premium e acabamento
+            excepcional.
           </p>
           <div className="flex gap-4">
             <a
@@ -49,7 +50,7 @@ export function Footer() {
 
         <div>
           <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">
-            Location
+            Localização
           </h4>
           <div className="flex items-start gap-3 text-gray-300 font-light">
             <MapPin className="w-5 h-5 mt-0.5 shrink-0" />
@@ -89,7 +90,15 @@ export function Footer() {
                 href="#wall-art"
                 className="hover:text-white transition-colors"
               >
-                Wall Art
+                Projetos
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="#faq"
+                className="hover:text-white transition-colors"
+              >
+                FAQ
               </Link>
             </li>
             <li>

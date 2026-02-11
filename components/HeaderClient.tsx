@@ -9,7 +9,8 @@ import { QuoteCalculator } from "@/components/QuoteCalculator";
 const navItems = [
   { name: "Sobre", href: "#about" },
   { name: "Materiais", href: "#materials" },
-  { name: "Wall Art", href: "#wall-art" },
+  { name: "Projetos", href: "#wall-art" },
+  { name: "FAQ", href: "#faq" },
   { name: "Contato", href: "#contact" },
 ];
 
@@ -67,7 +68,7 @@ export function HeaderClient() {
           onClick={() => setIsCalculatorOpen(true)}
           className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none"
         >
-          Inicie seu Projeto
+          Solicitar Orçamento
         </button>
       </nav>
 
@@ -106,7 +107,7 @@ export function HeaderClient() {
               }}
               className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest rounded-none"
             >
-              Inicie seu Projeto
+              Solicitar Orçamento
             </button>
           </motion.div>
         )}
