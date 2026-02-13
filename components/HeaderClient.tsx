@@ -8,6 +8,7 @@ import { QuoteCalculator } from "@/components/QuoteCalculator";
 
 const navItems = [
   { name: "Sobre", href: "#about" },
+  { name: "Produtos", href: "#products" },
   { name: "Materiais", href: "#materials" },
   { name: "Projetos", href: "#wall-art" },
   { name: "FAQ", href: "#faq" },

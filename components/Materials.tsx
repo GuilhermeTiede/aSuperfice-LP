@@ -37,7 +37,7 @@ const materialImages = [
 
 export function Materials() {
   return (
-    <section id="materials" className="py-24 bg-gray-50 text-gray-900">
+    <section id="materials" className="pt-12 pb-24 bg-gray-50 text-gray-900">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +57,7 @@ export function Materials() {
             homologados para receber tintas látex com alta resistência a
             arranhões e desbotamento. Investimos na seleção do que existe de
             melhor para entregarmos um resultado sensorial de cor, nitidez,
-            durabilidade e sofisticação em escala.
+            durabilidade e sofisticação.
           </p>
         </motion.div>
 
@@ -79,7 +79,7 @@ export function Materials() {
                 className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span className="text-white text-lg font-serif font-medium tracking-wide">
+                <span className="text-white text-lg font-sans font-semibold tracking-wide">
                   {img.label}
                 </span>
               </div>

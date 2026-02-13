@@ -19,9 +19,9 @@ export default function Home() {
       <About />
       <ProductsServices />
       <Materials />
+      <WallArtSpecialty />
       <HowItWorks />
       <CorporateProjects />
-      <WallArtSpecialty />
       <SocialProof />
       <FAQ />
       <CallToAction />

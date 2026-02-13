@@ -69,19 +69,19 @@ export function About() {
 
               <div className="mt-10 grid grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-serif mb-2 text-gray-900">
+                  <h3 className="text-2xl md:text-3xl font-sans font-semibold mb-2 text-gray-900">
                     Consultoria Técnica
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-base text-gray-500">
                     Suporte completo desde a análise de arquivo até a execução
                     final.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xl font-serif mb-2 text-gray-900">
+                  <h3 className="text-2xl md:text-3xl font-sans font-semibold mb-2 text-gray-900">
                     Tecnologia
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-base text-gray-500">
                     Impressão ECO certificada de alta resolução e durabilidade.
                   </p>
                 </div>
@@ -128,7 +128,7 @@ export function About() {
                 transition={{ delay: idx * 0.1 }}
                 className="p-8 border border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-500"
               >
-                <h3 className="text-xl font-serif font-medium text-white text-center">
+                <h3 className="text-xl font-sans font-semibold text-white text-center">
                   {item.title}
                 </h3>
               </motion.div>

@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,6 +17,13 @@ const cormorantGaramond = Cormorant_Garamond({
   display: "swap",
   preload: true,
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "Impressão de Grande Formato | Ateliê de Impressão aSuperfície",
@@ -110,6 +118,20 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
       >
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-PE3NEPXQNZ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-PE3NEPXQNZ');
+          `}
+        </Script>
         {children}
       </body>
     </html>

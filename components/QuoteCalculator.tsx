@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Plus,
   Trash2,
@@ -27,16 +28,17 @@ type ProductType =
   | "vinyl"
   | "canvas"
   | "engraving"
-  | "sample_kit";
+  | "sample_kit"
+  | "installation";
 
-const FIXED_SETUP_PRICE = 350;
 const SAMPLE_KIT_PRICE = 80;
 
 const PRODUCT_OPTIONS = [
-  { id: "wallpaper", label: "Papel de Parede", price: 180 },
-  { id: "vinyl", label: "Adesivo Vinil", price: 150 },
+  { id: "wallpaper", label: "Papel de Parede", price: 130 },
+  { id: "vinyl", label: "Adesivo Vinil", price: 100 },
   { id: "canvas", label: "Canvas", price: 350 },
   { id: "engraving", label: "Gravura", price: 200 },
+  { id: "installation", label: "Instalação", price: 50 },
   { id: "sample_kit", label: "Kit de Amostras", price: SAMPLE_KIT_PRICE },
 ] as const;
 
@@ -59,6 +61,12 @@ interface QuoteCalculatorProps {
 }
 
 export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [walls, setWalls] = useState<Wall[]>([
     {
       id: "1",
@@ -71,7 +79,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
   ]);
   const [generalNotes, setGeneralNotes] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-  // Remove global attachedFiles state and specific fileInputRef since we'll use per-wall inputs
 
   // Upload file to Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string | null> => {
@@ -132,17 +139,26 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     const pricePerSqm =
       PRODUCT_OPTIONS.find((p) => p.id === wall.product)?.price || 0;
     const area = (wall.height / 100) * (wall.width / 100);
-
-    const shouldAddSetupPrice =
-      wall.product === "wallpaper" || wall.product === "vinyl";
-
-    return area * pricePerSqm + (shouldAddSetupPrice ? FIXED_SETUP_PRICE : 0);
+    const price = area * pricePerSqm;
+    if (wall.product === "installation") {
+      return Math.max(price, 400);
+    }
+    return price;
   };
 
-  const totalPrice = walls.reduce(
-    (acc, wall) => acc + calculateWallPrice(wall),
+  const productsTotal = walls.reduce(
+    (acc, wall) =>
+      wall.product !== "installation" ? acc + calculateWallPrice(wall) : acc,
     0,
   );
+
+  const servicesTotal = walls.reduce(
+    (acc, wall) =>
+      wall.product === "installation" ? acc + calculateWallPrice(wall) : acc,
+    0,
+  );
+
+  const totalPrice = productsTotal + servicesTotal;
 
   const removeWall = (id: string) => {
     if (walls.length > 1) {
@@ -177,7 +193,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
         uploading: true,
       };
 
-      // Create preview for images
       if (file.type.startsWith("image/")) {
         attachedFile.preview = URL.createObjectURL(file);
       }
@@ -185,7 +200,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
       return attachedFile;
     });
 
-    // Add files to wall state immediately
     setWalls((prevWalls) =>
       prevWalls.map((wall) =>
         wall.id === wallId
@@ -196,7 +210,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
 
     setIsUploading(true);
 
-    // Upload each file to Cloudinary
     for (const attachedFile of newFiles) {
       const uploadedUrl = await uploadToCloudinary(attachedFile.file);
 
@@ -222,8 +235,6 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     }
 
     setIsUploading(false);
-
-    // Reset input
     e.target.value = "";
   };
 
@@ -259,6 +270,19 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
+  const getWallLabel = (wall: Wall, index: number) => {
+    switch (wall.product) {
+      case "wallpaper":
+        return `Parede ${index + 1}`;
+      case "installation":
+        return `Instalação ${index + 1}`;
+      case "sample_kit":
+        return `Item ${index + 1}`;
+      default:
+        return `Imagem ${index + 1}`;
+    }
+  };
+
   const generateWhatsAppMessage = () => {
     const projectDetails = walls
       .map((wall, index) => {
@@ -275,12 +299,7 @@ export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
           ? "\n  *→ Cliente deseja cotar instalação*"
           : "";
 
-        const wallLabel =
-          wall.product === "wallpaper"
-            ? `Parede ${index + 1}`
-            : wall.product === "sample_kit"
-              ? `Item ${index + 1}`
-              : `Imagem ${index + 1}`;
+        const wallLabel = getWallLabel(wall, index);
 
         if (wall.product === "sample_kit") {
           return `- ${wallLabel}: Kit de Amostras\n  Preço: ${formatCurrency(SAMPLE_KIT_PRICE)}`;
@@ -301,11 +320,13 @@ ${generalNotes ? `\n*Observações Gerais:*\n${generalNotes}` : ""}
 Gostaria de agendar uma consultoria para discutir detalhes.`;
 
     const encodedMessage = encodeURIComponent(message);
-    const phoneNumber = "5521994408290"; // Replace with actual number
+    const phoneNumber = "5521994408290";
     return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
@@ -325,7 +346,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
-              <h2 className="text-xl font-serif font-medium text-gray-900">
+              <h2 className="text-xl font-sans font-semibold text-gray-900">
                 Calculadora de Projeto
               </h2>
               <button
@@ -355,11 +376,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                   >
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="text-sm font-medium text-gray-700">
-                        {wall.product === "wallpaper"
-                          ? `Parede ${index + 1}`
-                          : wall.product === "sample_kit"
-                            ? `Item ${index + 1}`
-                            : `Imagem ${index + 1}`}
+                        {getWallLabel(wall, index)}
                       </span>
                       <div className="flex items-center gap-2">
                         <div className="flex flex-wrap gap-1">
@@ -437,29 +454,30 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
 
                     <div className="pt-2 flex justify-between items-end border-t border-gray-100 mt-4">
                       <div className="flex-1 mr-4 flex flex-col gap-3">
-                        {wall.product !== "sample_kit" && (
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id={`install-${wall.id}`}
-                              checked={!!wall.includeInstallation}
-                              onChange={(e) =>
-                                updateWall(
-                                  wall.id,
-                                  "includeInstallation",
-                                  e.target.checked,
-                                )
-                              }
-                              className="rounded border-gray-300 text-black focus:ring-black w-3 h-3"
-                            />
-                            <label
-                              htmlFor={`install-${wall.id}`}
-                              className="text-xs text-gray-700 cursor-pointer"
-                            >
-                              Desejo cotar instalação
-                            </label>
-                          </div>
-                        )}
+                        {wall.product !== "sample_kit" &&
+                          wall.product !== "installation" && (
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                id={`install-${wall.id}`}
+                                checked={!!wall.includeInstallation}
+                                onChange={(e) =>
+                                  updateWall(
+                                    wall.id,
+                                    "includeInstallation",
+                                    e.target.checked,
+                                  )
+                                }
+                                className="rounded border-gray-300 text-black focus:ring-black w-3 h-3"
+                              />
+                              <label
+                                htmlFor={`install-${wall.id}`}
+                                className="text-xs text-gray-700 cursor-pointer"
+                              >
+                                Desejo cotar instalação
+                              </label>
+                            </div>
+                          )}
 
                         <div>
                           <label
@@ -515,11 +533,11 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                               {formatCurrency(calculateWallPrice(wall))}
                             </span>
                           </p>
-                          {wall.product !== "sample_kit" && (
-                            <p className="text-[10px] text-gray-400 mt-0.5">
-                              (Inclui montagem e prova de cor)
-                            </p>
-                          )}
+                          {wall.product !== "sample_kit" &&
+                            wall.product !== "installation" && (
+                              <p className="text-[10px] text-gray-400 mt-0.5">
+                              </p>
+                            )}
                         </div>
                       )}
                     </div>
@@ -553,9 +571,29 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
               {/* Total Summary */}
               {totalPrice > 0 && (
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Total Estimado</span>
-                    <span className="font-medium text-lg text-gray-900">
+                  {productsTotal > 0 && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Total Produtos</span>
+                      <span className="font-medium text-gray-900">
+                        {formatCurrency(productsTotal)}
+                      </span>
+                    </div>
+                  )}
+
+                  {servicesTotal > 0 && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Total Serviços</span>
+                      <span className="font-medium text-gray-900">
+                        {formatCurrency(servicesTotal)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="pt-2 mt-2 border-t border-gray-200 flex items-center justify-between text-base">
+                    <span className="font-semibold text-gray-900">
+                      Total Estimado
+                    </span>
+                    <span className="font-bold text-lg text-gray-900">
                       {formatCurrency(totalPrice)}
                     </span>
                   </div>
@@ -593,6 +631,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

@@ -86,7 +86,7 @@ export function HowItWorks() {
                     {step.number}
                   </span>
                   <div className="relative">
-                    <h3 className="text-lg font-serif font-medium text-gray-900 mb-3 pr-10">
+                    <h3 className="text-lg font-sans font-semibold text-gray-900 mb-3 pr-10">
                       {step.title}
                     </h3>
                     <p className="text-gray-500 font-light leading-relaxed text-sm">

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
 
@@ -42,6 +42,16 @@ export function Hero() {
               Solicitar Orçamento
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
+
+            <a
+              href="https://wa.me/5521994408290"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-green-600 text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-green-700 transition-all rounded-none"
+            >
+              <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              Fale pelo WhatsApp
+            </a>
           </div>
 
         </div>

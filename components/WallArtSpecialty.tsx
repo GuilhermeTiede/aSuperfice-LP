@@ -26,11 +26,6 @@ const projectsDataRaw: Omit<ProjectData, "src">[] = [
     credits: ["@ella.lima_", "@mangarosaarquitetura"],
   },
   {
-    id: 3,
-    title: "Papel de parede toilet loja Eva",
-    credits: ["@ella.lima_", "@mangarosaarquitetura"],
-  },
-  {
     id: 4,
     title: "Papel de parede e gravuras loja LZ mini Ipanema",
     credits: ["@ella.lima_", "@mangarosaarquitetura"],
@@ -203,11 +198,12 @@ const projectsDataRaw: Omit<ProjectData, "src">[] = [
 ];
 
 const projectImages: ProjectData[] = projectsDataRaw
+  .slice()
+  .sort((a, b) => a.id - b.id)
   .map((data) => ({
     ...data,
     src: `/projetos_realizados/${data.id}.webp`,
-  }))
-  .reverse();
+  }));
 
 export function WallArtSpecialty() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -228,126 +224,130 @@ export function WallArtSpecialty() {
   };
 
   return (
-    <section
-      id="wall-art"
-      className="py-32 bg-gray-900 text-white relative overflow-hidden"
-    >
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/Wall-Art-corredor.webp"
-          alt="Wall Art Imersiva"
-          fill
-          className="object-cover object-top opacity-40 mix-blend-overlay"
-          priority
-        />
-      </div>
+    <>
+      <section
+        id="wall-art"
+        className="relative h-[80vh] flex items-center justify-center bg-gray-900 text-white overflow-hidden"
+      >
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/Wall-Art-corredor.webp"
+            alt="Wall Art Imersiva"
+            fill
+            className="object-cover object-top opacity-50 mix-blend-overlay"
+            priority
+          />
+        </div>
 
-      {/* Background texture hint */}
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-500 via-gray-900 to-black pointer-events-none z-0" />
-
-      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-12"
-        >
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-6 block">
-            Especialidade
-          </span>
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-10 leading-tight">
-            Wall Art <br /> Imersiva
-          </h2>
-          <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed">
-            Especialistas em impressão de grande formato para murais panorâmicos
-            e superfícies arquitetônicas. Nossa tecnologia permite ambientes
-            imersivos perfeitos — do papel de parede personalizado a grandes
-            painéis corporativos.
-          </p>
-        </motion.div>
-
-        {/* Inline Gallery */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative w-full max-w-6xl h-[60vh] md:h-[80vh] bg-black/40 rounded-xl overflow-hidden border border-white/10 backdrop-blur-sm shadow-2xl"
-        >
-          <button
-            onClick={prevImage}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
-            aria-label="Projeto Anterior"
+        {/* Text Content */}
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mb-12"
           >
-            <ChevronLeft className="w-8 h-8" />
-          </button>
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-6 block">
+              Especialidade
+            </span>
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-10 leading-tight">
+              Wall Art <br /> Imersiva
+            </h2>
+            <p className="max-w-2xl mx-auto text-gray-300 font-light text-lg md:text-xl leading-relaxed">
+              Especialistas em impressão de grande formato para murais panorâmicos
+              e superfícies arquitetônicas. Nossa tecnologia permite ambientes
+              imersivos perfeitos — do papel de parede personalizado a grandes
+              painéis corporativos.
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-          <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentImageIndex}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="relative w-full h-full"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={1}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = swipePower(offset.x, velocity.x);
+      <section className="py-24 bg-black text-white">
+        <div className="container mx-auto px-6 flex justify-center">
+          {/* Gallery Block */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.8 }}
+            className="relative w-full max-w-6xl h-[60vh] md:h-[80vh] bg-black/40 overflow-hidden backdrop-blur-sm shadow-2xl"
+          >
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
+              aria-label="Projeto Anterior"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
 
-                  if (swipe < -swipeConfidenceThreshold) {
-                    nextImage();
-                  } else if (swipe > swipeConfidenceThreshold) {
-                    prevImage();
-                  }
-                }}
-              >
-                <Image
-                  src={projectImages[currentImageIndex].src}
-                  alt={projectImages[currentImageIndex].title}
-                  fill
-                  className="object-contain"
-                  priority
-                  draggable={false}
-                />
+            <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentImageIndex}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="relative w-full h-full"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={1}
+                  onDragEnd={(e, { offset, velocity }) => {
+                    const swipe = swipePower(offset.x, velocity.x);
 
-                {/* Caption Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-20 pb-8 px-6 flex flex-col items-center text-center pointer-events-none">
-                  <h3 className="text-white text-xl md:text-3xl font-serif mb-2 drop-shadow-lg">
-                    {projectImages[currentImageIndex].title}
-                  </h3>
-                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 text-white/80 text-sm md:text-base font-light">
-                    {projectImages[currentImageIndex].credits.map(
-                      (credit, idx) => (
-                        <span key={idx} className="bg-white/10 px-3 py-1 rounded-full">
-                          {credit}
-                        </span>
-                      ),
-                    )}
+                    if (swipe < -swipeConfidenceThreshold) {
+                      nextImage();
+                    } else if (swipe > swipeConfidenceThreshold) {
+                      prevImage();
+                    }
+                  }}
+                >
+                  <Image
+                    src={projectImages[currentImageIndex].src}
+                    alt={projectImages[currentImageIndex].title}
+                    fill
+                    className="object-contain"
+                    priority
+                    draggable={false}
+                  />
+
+                  {/* Caption Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-20 pb-8 px-6 flex flex-col items-center text-center pointer-events-none">
+                    <h3 className="text-white text-xl md:text-3xl font-serif mb-2 drop-shadow-lg">
+                      {projectImages[currentImageIndex].title}
+                    </h3>
+                    <div className="flex flex-col md:flex-row gap-2 md:gap-4 text-white/80 text-sm md:text-base font-light">
+                      {projectImages[currentImageIndex].credits.map(
+                        (credit, idx) => (
+                          <span key={idx} className="bg-white/10 px-3 py-1 rounded-full">
+                            {credit}
+                          </span>
+                        ),
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-          <button
-            onClick={nextImage}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
-            aria-label="Próximo Projeto"
-          >
-            <ChevronRight className="w-8 h-8" />
-          </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 text-white/70 hover:text-white hover:bg-black/80 transition-all rounded-full"
+              aria-label="Próximo Projeto"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
 
-          {/* Counter */}
-          <div className="absolute top-6 right-6 z-20 bg-black/60 px-4 py-2 rounded-full text-xs font-bold tracking-widest border border-white/10 text-white/90">
-            {currentImageIndex + 1} / {projectImages.length}
-          </div>
-        </motion.div>
-      </div>
-    </section>
+            {/* Counter */}
+            <div className="absolute top-6 right-6 z-20 bg-black/60 px-4 py-2 rounded-full text-xs font-bold tracking-widest border border-white/10 text-white/90">
+              {currentImageIndex + 1} / {projectImages.length}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </>
   );
 }

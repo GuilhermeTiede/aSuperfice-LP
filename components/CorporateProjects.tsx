@@ -21,7 +21,7 @@ export function CorporateProjects() {
   };
 
   return (
-    <section className="py-24 md:py-32 bg-white">
+    <section className="py-24 md:py-32 bg-black">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
           <motion.div
@@ -31,13 +31,13 @@ export function CorporateProjects() {
             transition={{ duration: 0.8 }}
             className="order-2 md:order-1"
           >
-            <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+            <span className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4 block font-bold">
               Projetos corporativos e empresariais
             </span>
-            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-gray-900 font-medium">
+            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-white font-medium">
               Soluções para grandes marcas e espaços complexos
             </h2>
-            <p className="text-gray-600 text-lg font-light mb-8 leading-relaxed">
+            <p className="text-gray-300 text-lg font-light mb-8 leading-relaxed">
               Para espaços comerciais, obras e redes, entregamos soluções sob
               medida para demandas como:
             </p>
@@ -46,26 +46,18 @@ export function CorporateProjects() {
               {points.map((point, idx) => (
                 <li key={idx} className="flex items-start gap-4">
                   <div className="mt-1 shrink-0">
-                    <Check className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
+                    <Check className="w-5 h-5 text-white" strokeWidth={1.5} />
                   </div>
-                  <span className="text-gray-600 font-light text-lg">{point}</span>
+                  <span className="text-gray-300 font-light text-lg">{point}</span>
                 </li>
               ))}
             </ul>
-
-            <div className="bg-gray-900 text-white p-8 mb-10 border border-gray-800 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl pointer-events-none" />
-               <p className="text-xl md:text-2xl font-serif italic leading-relaxed relative z-10">
-                &ldquo;Se o projeto é complexo, a execução precisa ser
-                precisa.&rdquo;
-              </p>
-            </div>
 
             <a
               href={generateWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 bg-black text-white px-8 py-4 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none"
+              className="group inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm uppercase tracking-widest hover:bg-gray-200 transition-all rounded-none"
             >
               Falar com um especialista
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

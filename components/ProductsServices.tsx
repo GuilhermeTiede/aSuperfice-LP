@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  Printer,
+  ImageIcon,
   Layers,
   Palette,
   Frame,
@@ -24,7 +24,7 @@ const portfolio = [
   {
     category: "Produtos",
     description:
-      "Materiais com tramas, fibras naturais ou sintéticos tratados para receberem pigmentos de cores com vivacidade e alta resolução.",
+      "Materiais naturais e sintéticos tratados para cores vivas e alta resolução.",
     items: [
       {
         icon: Frame,
@@ -41,14 +41,14 @@ const portfolio = [
         image: "/projetos_e_servicos/produtos/papel de parede.webp",
       },
       {
-        icon: Palette,
+        icon: Scroll,
         title: "Adesivos",
         description:
           "Soluções adequadas para cada projeto: blockout fosco para revestimento sem emendas visíveis; translúcidos para decoração de vidros e os Casts para envelopamento de objetos.",
         image: "/projetos_e_servicos/produtos/adesivos.webp",
       },
       {
-        icon: Printer,
+        icon: ImageIcon,
         title: "Gravuras e Posters",
         description:
           "Impressões de gravuras em papéis de algodão ou posters em adesivo vinílico fosco, ideal para composição de quadros em projetos de decoração.",
@@ -96,7 +96,7 @@ export function ProductsServices() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   return (
-    <section className="py-24 bg-gray-50/50">
+    <section id="products" className="pt-24 pb-0 bg-gray-50/50">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <span className="text-lg font-bold uppercase tracking-[0.2em] text-gray-900 mb-4 block">
@@ -118,10 +118,10 @@ export function ProductsServices() {
             <div key={group.category}>
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-gray-200 pb-6 gap-4">
                 <div className="md:w-full">
-                  <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-2 block">
+                  <span className="text-sm font-bold uppercase tracking-[0.3em] text-gray-500 mb-2 block">
                     {group.category}
                   </span>
-                  <h3 className="text-4xl md:text-5xl font-serif text-gray-900 mb-4 font-medium leading-tight">
+                  <h3 className="text-5xl md:text-6xl font-serif text-gray-900 mb-4 font-medium leading-tight">
                     {group.description}
                   </h3>
                 </div>
@@ -162,7 +162,7 @@ export function ProductsServices() {
                         <item.icon className="w-5 h-5" strokeWidth={1.5} />
                       </div>
 
-                      <h4 className="text-xl font-serif font-medium text-gray-900 mb-3 group-hover:text-black">
+                      <h4 className="text-xl font-sans font-semibold text-gray-900 mb-3 group-hover:text-black">
                         {item.title}
                       </h4>
                       <p className="text-gray-500 font-light leading-relaxed mb-6 flex-1">
