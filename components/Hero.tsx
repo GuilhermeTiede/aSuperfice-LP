@@ -3,6 +3,7 @@
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function Hero() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
@@ -47,6 +48,7 @@ export function Hero() {
               href="https://wa.me/5521994408290"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick("hero_section", "direct")}
               className="group bg-green-600 text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-green-700 transition-all rounded-none"
             >
               <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -60,6 +62,7 @@ export function Hero() {
       <QuoteCalculator
         isOpen={isCalculatorOpen}
         onClose={() => setIsCalculatorOpen(false)}
+        source="hero"
       />
     </section>
   );

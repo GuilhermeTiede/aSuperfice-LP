@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
@@ -96,6 +95,22 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <head>
+        {/* Google Analytics (GA4) + Google Ads - devem estar no head para detecção da tag */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-PE3NEPXQNZ"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PE3NEPXQNZ');
+              gtag('config', 'AW-17950674353');
+            `,
+          }}
+        />
         {/* CSS crítico inline para evitar bloqueio de renderização */}
         <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
         {/* Preload imagem crítica do Hero para LCP */}
@@ -118,20 +133,6 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
       >
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-PE3NEPXQNZ"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-PE3NEPXQNZ');
-          `}
-        </Script>
         {children}
       </body>
     </html>

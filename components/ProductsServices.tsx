@@ -199,6 +199,7 @@ export function ProductsServices() {
       <QuoteCalculator
         isOpen={isCalculatorOpen}
         onClose={() => setIsCalculatorOpen(false)}
+        source="product_card"
       />
     </section>
   );

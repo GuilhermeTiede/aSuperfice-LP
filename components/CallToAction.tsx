@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MessageCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function CallToAction() {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
@@ -38,6 +39,7 @@ export function CallToAction() {
           <Link
             href={generateWhatsAppLink()}
             target="_blank"
+            onClick={() => trackWhatsAppClick("cta_final", "direct")}
             className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-none"
           >
             <MessageCircle className="w-5 h-5" />
@@ -58,6 +60,7 @@ export function CallToAction() {
       <QuoteCalculator
         isOpen={isCalculatorOpen}
         onClose={() => setIsCalculatorOpen(false)}
+        source="cta_final"
       />
     </section>
   );

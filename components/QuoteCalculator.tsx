@@ -13,6 +13,11 @@ import {
   File,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  trackCalculatorOpened,
+  trackCalculatorSubmitted,
+  trackWhatsAppClick,
+} from "@/lib/analytics";
 
 type Wall = {
   id: string;
@@ -58,14 +63,22 @@ const CLOUDINARY_UPLOAD_PRESET = "asuperficie_uploads"; // Must be set to "Unsig
 interface QuoteCalculatorProps {
   isOpen: boolean;
   onClose: () => void;
+  source?: string;
 }
 
-export function QuoteCalculator({ isOpen, onClose }: QuoteCalculatorProps) {
+export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCalculatorProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Track quando a calculadora é aberta
+  useEffect(() => {
+    if (isOpen) {
+      trackCalculatorOpened(source);
+    }
+  }, [isOpen, source]);
 
   const [walls, setWalls] = useState<Wall[]>([
     {
@@ -322,6 +335,23 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
     const encodedMessage = encodeURIComponent(message);
     const phoneNumber = "5521994408290";
     return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+  };
+
+  const handleWhatsAppSubmit = () => {
+    // Track evento de submissão do formulário
+    const products = walls.map((w) => w.product);
+    const hasInstallation = walls.some((w) => w.includeInstallation);
+    const hasFiles = walls.some((w) => w.files.length > 0);
+
+    trackCalculatorSubmitted({
+      total_value: totalPrice,
+      num_walls: walls.length,
+      products,
+      has_installation: hasInstallation,
+      has_files: hasFiles,
+    });
+
+    trackWhatsAppClick("calculator_form", "structured_quote");
   };
 
   if (!mounted) return null;
@@ -609,6 +639,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 href={generateWhatsAppMessage()}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleWhatsAppSubmit}
                 className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
                   walls.some(
                     (w) =>

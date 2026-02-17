@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
+import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function CorporateProjects() {
   const points = [
@@ -57,6 +58,7 @@ export function CorporateProjects() {
               href={generateWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick("corporate_section", "specialist")}
               className="group inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm uppercase tracking-widest hover:bg-gray-200 transition-all rounded-none"
             >
               Falar com um especialista
