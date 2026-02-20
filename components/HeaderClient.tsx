@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { useCalculator } from "@/components/CalculatorContext";
 
 const navItems = [
   { name: "Sobre", href: "#about" },
+  { name: "Como Funciona", href: "#how-it-works" },
   { name: "Produtos", href: "#products" },
   { name: "Materiais", href: "#materials" },
   { name: "Projetos", href: "#wall-art" },
@@ -18,7 +19,7 @@ const navItems = [
 export function HeaderClient() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const { openCalculator } = useCalculator();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,7 +67,7 @@ export function HeaderClient() {
           </Link>
         ))}
         <button
-          onClick={() => setIsCalculatorOpen(true)}
+          onClick={() => openCalculator("header")}
           className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none"
         >
           Solicitar Orçamento
@@ -104,7 +105,7 @@ export function HeaderClient() {
             <button
               onClick={() => {
                 setIsOpen(false);
-                setIsCalculatorOpen(true);
+                openCalculator("header_mobile");
               }}
               className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest rounded-none"
             >
@@ -113,11 +114,6 @@ export function HeaderClient() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <QuoteCalculator
-        isOpen={isCalculatorOpen}
-        onClose={() => setIsCalculatorOpen(false)}
-      />
     </>
   );
 }

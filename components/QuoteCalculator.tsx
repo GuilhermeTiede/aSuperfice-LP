@@ -17,6 +17,7 @@ import {
   trackCalculatorOpened,
   trackCalculatorSubmitted,
   trackWhatsAppClick,
+  trackEvent,
 } from "@/lib/analytics";
 
 type Wall = {
@@ -92,6 +93,23 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
   ]);
   const [generalNotes, setGeneralNotes] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleClose = () => {
+    if (!submitted) {
+      const filledWalls = walls.filter(
+        (w) => w.height > 0 || w.width > 0 || w.product === "sample_kit",
+      ).length;
+      trackEvent("calculator_closed", {
+        source,
+        num_walls: walls.length,
+        filled_walls: filledWalls,
+        had_dimensions: filledWalls > 0,
+      });
+    }
+    setSubmitted(false);
+    onClose();
+  };
 
   // Upload file to Cloudinary
   const uploadToCloudinary = async (file: File): Promise<string | null> => {
@@ -126,6 +144,7 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
   };
 
   const addWall = () => {
+    trackEvent("calculator_wall_added", { num_walls: walls.length + 1, source });
     setWalls([
       ...walls,
       {
@@ -184,6 +203,20 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
     field: "height" | "width" | "product" | "includeInstallation",
     value: number | ProductType | boolean,
   ) => {
+    // Track product selection
+    if (field === "product") {
+      trackEvent("calculator_product_selected", { product: value, source });
+    }
+    // Track dimensions entered
+    if ((field === "height" || field === "width") && typeof value === "number" && value > 0) {
+      const wall = walls.find((w) => w.id === id);
+      if (wall) {
+        const otherDim = field === "height" ? wall.width : wall.height;
+        if (otherDim > 0) {
+          trackEvent("calculator_dimensions_entered", { source });
+        }
+      }
+    }
     setWalls(
       walls.map((wall) =>
         wall.id === id ? { ...wall, [field]: value } : wall,
@@ -225,6 +258,10 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
 
     for (const attachedFile of newFiles) {
       const uploadedUrl = await uploadToCloudinary(attachedFile.file);
+
+      if (uploadedUrl) {
+        trackEvent("calculator_file_uploaded", { source });
+      }
 
       setWalls((prevWalls) =>
         prevWalls.map((wall) =>
@@ -338,6 +375,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
   };
 
   const handleWhatsAppSubmit = () => {
+    setSubmitted(true);
     // Track evento de submissão do formulário
     const products = walls.map((w) => w.product);
     const hasInstallation = walls.some((w) => w.includeInstallation);
@@ -364,7 +402,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
 
@@ -380,7 +418,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 Calculadora de Projeto
               </h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="p-2 hover:bg-gray-100 rounded-none transition-colors"
               >
                 <X className="w-5 h-5 text-gray-500" />
@@ -420,7 +458,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                                   option.id as ProductType,
                                 )
                               }
-                              className={`px-2 py-1 rounded-none text-[10px] font-medium transition-all border ${
+                              className={`px-3 py-2 rounded-none text-xs font-medium transition-all border ${
                                 wall.product === option.id
                                   ? "bg-black text-white border-black"
                                   : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
@@ -579,7 +617,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                   className="w-full py-3 border border-dashed border-gray-300 rounded-none text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <Plus className="w-4 h-4" />
-                  Adicionar outra parede
+                  {walls.some((w) => w.product === "wallpaper" || w.product === "vinyl") ? "Adicionar outra parede" : "Adicionar outro item"}
                 </button>
               </div>
 
@@ -635,24 +673,36 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 </div>
               )}
 
-              <a
-                href={generateWhatsAppMessage()}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleWhatsAppSubmit}
-                className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
-                  walls.some(
-                    (w) =>
-                      (w.height > 0 && w.width > 0) ||
-                      w.product === "sample_kit",
-                  ) && !isUploading
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
-                }`}
-              >
-                <MessageCircle className="w-5 h-5" />
-                {isUploading ? "Enviando arquivos..." : "Continuar no WhatsApp"}
-              </a>
+              {(() => {
+                const isValid = walls.some(
+                  (w) =>
+                    (w.height > 0 && w.width > 0) ||
+                    w.product === "sample_kit",
+                ) && !isUploading;
+                return (
+                  <>
+                    <a
+                      href={generateWhatsAppMessage()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleWhatsAppSubmit}
+                      className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
+                        isValid
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
+                      }`}
+                    >
+                      <MessageCircle className="w-5 h-5" />
+                      {isUploading ? "Enviando arquivos..." : "Continuar no WhatsApp"}
+                    </a>
+                    {!isValid && !isUploading && (
+                      <p className="text-xs text-amber-600 text-center">
+                        Insira altura e largura para continuar
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
 
               <p className="text-[10px] text-gray-400 text-center leading-relaxed px-4">
                 *Ao continuar, você falará diretamente com nossa equipe técnica

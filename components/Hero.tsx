@@ -1,12 +1,11 @@
 "use client";
 
 import { ArrowRight, MessageCircle } from "lucide-react";
-import { useState } from "react";
-import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { useCalculator } from "@/components/CalculatorContext";
 import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function Hero() {
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const { openCalculator } = useCalculator();
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden pt-20">
@@ -37,8 +36,8 @@ export function Hero() {
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <button
-              onClick={() => setIsCalculatorOpen(true)}
-              className="group bg-black text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none"
+              onClick={() => openCalculator("hero")}
+              className="group bg-black text-white px-10 py-5 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none shadow-lg"
             >
               Solicitar Orçamento
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -49,21 +48,18 @@ export function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick("hero_section", "direct")}
-              className="group bg-green-600 text-white px-8 py-4 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-green-700 transition-all rounded-none"
+              className="group border border-gray-400 text-gray-700 px-8 py-4 text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-gray-100 transition-all rounded-none"
             >
-              <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
               Fale pelo WhatsApp
             </a>
           </div>
 
+          <p className="mt-4 text-xs text-gray-500">
+            Grátis e sem compromisso · Resultado em 30 segundos
+          </p>
         </div>
       </div>
-
-      <QuoteCalculator
-        isOpen={isCalculatorOpen}
-        onClose={() => setIsCalculatorOpen(false)}
-        source="hero"
-      />
     </section>
   );
 }

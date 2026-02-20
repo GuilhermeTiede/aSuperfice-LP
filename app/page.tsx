@@ -10,22 +10,29 @@ import { SocialProof } from "@/components/SocialProof";
 import { FAQ } from "@/components/FAQ";
 import { CallToAction } from "@/components/CallToAction";
 import { Footer } from "@/components/Footer";
+import { InlineCalculator } from "@/components/InlineCalculator";
+import { FloatingCTA } from "@/components/FloatingCTA";
+import { PageCalculatorProvider } from "@/components/PageCalculatorProvider";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
-      <Header />
-      <Hero />
-      <About />
-      <ProductsServices />
-      <Materials />
-      <WallArtSpecialty />
-      <HowItWorks />
-      <CorporateProjects />
-      <SocialProof />
-      <FAQ />
-      <CallToAction />
-      <Footer />
-    </main>
+    <PageCalculatorProvider>
+      <main className="min-h-screen bg-white">
+        <Header />
+        <Hero />
+        <About />
+        <HowItWorks />
+        <InlineCalculator />
+        <ProductsServices />
+        <Materials />
+        <WallArtSpecialty />
+        <CorporateProjects />
+        <SocialProof />
+        <FAQ />
+        <CallToAction />
+        <Footer />
+        <FloatingCTA />
+      </main>
+    </PageCalculatorProvider>
   );
 }

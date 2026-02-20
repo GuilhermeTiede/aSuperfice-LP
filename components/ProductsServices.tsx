@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -12,12 +11,12 @@ import {
   Hammer,
   MonitorCheck,
   MessageSquareText,
-  Ruler, // Substituindo PencilRuler por Ruler que é mais comum ou manter PencilRuler se existir
+  Ruler,
   PencilRuler,
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
-import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { useCalculator } from "@/components/CalculatorContext";
 import { cn } from "@/lib/utils";
 
 const portfolio = [
@@ -93,7 +92,7 @@ const portfolio = [
 ];
 
 export function ProductsServices() {
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const { openCalculator } = useCalculator();
 
   return (
     <section id="products" className="pt-24 pb-0 bg-gray-50/50">
@@ -143,7 +142,7 @@ export function ProductsServices() {
                     viewport={{ once: true }}
                     transition={{ delay: itemIdx * 0.1 }}
                     className="group cursor-pointer bg-white border border-gray-100 hover:border-gray-200 hover:shadow-xl transition-all duration-500 overflow-hidden flex flex-col h-full"
-                    onClick={() => setIsCalculatorOpen(true)}
+                    onClick={() => openCalculator("product_card")}
                   >
                     {item.image && (
                       <div className="relative h-64 w-full overflow-hidden bg-gray-100 shrink-0">
@@ -187,7 +186,7 @@ export function ProductsServices() {
             visual em aplicações residenciais e comerciais.
           </p>
           <button
-            onClick={() => setIsCalculatorOpen(true)}
+            onClick={() => openCalculator("product_card")}
             className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none"
           >
             Solicitar Orçamento
@@ -195,12 +194,6 @@ export function ProductsServices() {
           </button>
         </div>
       </div>
-
-      <QuoteCalculator
-        isOpen={isCalculatorOpen}
-        onClose={() => setIsCalculatorOpen(false)}
-        source="product_card"
-      />
     </section>
   );
 }

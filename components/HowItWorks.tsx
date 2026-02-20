@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useCalculator } from "@/components/CalculatorContext";
 
 const steps = [
   {
@@ -43,6 +44,8 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  const { openCalculator } = useCalculator();
+
   return (
     <section id="how-it-works" className="py-24 md:py-32 bg-gray-50">
       <div className="container mx-auto px-6">
@@ -106,6 +109,26 @@ export function HowItWorks() {
             })}
           </div>
         </div>
+
+        {/* CTA after process explanation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+          className="text-center mt-16"
+        >
+          <button
+            onClick={() => openCalculator("how_it_works")}
+            className="group inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none shadow-lg"
+          >
+            Começar meu projeto
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+          <p className="mt-4 text-xs text-gray-500">
+            Grátis e sem compromisso · Resultado em 30 segundos
+          </p>
+        </motion.div>
       </div>
     </section>
   );

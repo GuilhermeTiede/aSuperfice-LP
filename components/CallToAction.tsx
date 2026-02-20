@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { MessageCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { QuoteCalculator } from "@/components/QuoteCalculator";
+import { useCalculator } from "@/components/CalculatorContext";
 import { trackWhatsAppClick } from "@/lib/analytics";
 
 export function CallToAction() {
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const { openCalculator } = useCalculator();
 
   const generateWhatsAppLink = () => {
     const phoneNumber = "+5521994408290";
@@ -30,8 +29,8 @@ export function CallToAction() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
-            onClick={() => setIsCalculatorOpen(true)}
-            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none"
+            onClick={() => openCalculator("cta_final")}
+            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none shadow-lg"
           >
             Solicitar Orçamento
             <ArrowRight className="w-4 h-4" />
@@ -40,9 +39,9 @@ export function CallToAction() {
             href={generateWhatsAppLink()}
             target="_blank"
             onClick={() => trackWhatsAppClick("cta_final", "direct")}
-            className="inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-green-700 transition-colors rounded-none"
+            className="inline-flex items-center gap-3 border border-gray-300 text-gray-700 px-10 py-5 text-xs uppercase tracking-widest hover:bg-gray-100 transition-colors rounded-none"
           >
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className="w-4 h-4" />
             Fale pelo Whatsapp
           </Link>
         </div>
@@ -56,12 +55,6 @@ export function CallToAction() {
           </a>
         </p>
       </div>
-
-      <QuoteCalculator
-        isOpen={isCalculatorOpen}
-        onClose={() => setIsCalculatorOpen(false)}
-        source="cta_final"
-      />
     </section>
   );
 }
