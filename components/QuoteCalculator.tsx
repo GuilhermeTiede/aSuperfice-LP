@@ -178,11 +178,36 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
     return price;
   };
 
-  const productsTotal = walls.reduce(
-    (acc, wall) =>
-      wall.product !== "installation" ? acc + calculateWallPrice(wall) : acc,
-    0,
-  );
+  const calculateWallArea = (wall: Wall) => {
+    if (wall.height <= 0 || wall.width <= 0) return 0;
+    return (wall.height / 100) * (wall.width / 100);
+  };
+
+  const canvasTotalArea = walls
+    .filter((w) => w.product === "canvas")
+    .reduce((acc, wall) => acc + calculateWallArea(wall), 0);
+
+  const engravingTotalArea = walls
+    .filter((w) => w.product === "engraving")
+    .reduce((acc, wall) => acc + calculateWallArea(wall), 0);
+
+  const CANVAS_PRICE_PER_SQM = PRODUCT_OPTIONS.find((p) => p.id === "canvas")?.price || 350;
+  const ENGRAVING_PRICE_PER_SQM = PRODUCT_OPTIONS.find((p) => p.id === "engraving")?.price || 200;
+
+  const canvasMissingArea = canvasTotalArea > 0 && canvasTotalArea < 2 ? 2 - canvasTotalArea : 0;
+  const canvasMissingPrice = canvasMissingArea * CANVAS_PRICE_PER_SQM;
+
+  const engravingMissingArea = engravingTotalArea > 0 && engravingTotalArea < 2 ? 2 - engravingTotalArea : 0;
+  const engravingMissingPrice = engravingMissingArea * ENGRAVING_PRICE_PER_SQM;
+
+  const productsTotal =
+    walls.reduce(
+      (acc, wall) =>
+        wall.product !== "installation" ? acc + calculateWallPrice(wall) : acc,
+      0,
+    ) +
+    canvasMissingPrice +
+    engravingMissingPrice;
 
   const servicesTotal = walls.reduce(
     (acc, wall) =>
@@ -364,6 +389,7 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
 *Detalhes do Projeto:*
 ${projectDetails}
 
+${canvasMissingArea > 0 ? `* Taxa Pedido Mínimo (Canvas - falta ${canvasMissingArea.toFixed(2)}m²): *+${formatCurrency(canvasMissingPrice)}*\n` : ""}${engravingMissingArea > 0 ? `* Taxa Pedido Mínimo (Gravura - falta ${engravingMissingArea.toFixed(2)}m²): *+${formatCurrency(engravingMissingPrice)}*\n` : ""}
 *Total Geral Estimado:* ${formatCurrency(totalPrice)}
 ${generalNotes ? `\n*Observações Gerais:*\n${generalNotes}` : ""}
 
@@ -639,6 +665,40 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
               {/* Total Summary */}
               {totalPrice > 0 && (
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                  {canvasTotalArea > 0 && (
+                    <div className="flex flex-col text-sm border-b border-gray-100 pb-2 mb-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Canvas ({canvasTotalArea.toFixed(2)}m²)</span>
+                        <span className="font-medium text-gray-900">
+                          {formatCurrency(canvasTotalArea * CANVAS_PRICE_PER_SQM)}
+                        </span>
+                      </div>
+                      {canvasMissingArea > 0 && (
+                        <div className="flex items-center justify-between text-amber-600 mt-1">
+                          <span className="text-xs">+ Diferença pedido mínimo (falta {canvasMissingArea.toFixed(2)}m²)</span>
+                          <span className="font-medium">+{formatCurrency(canvasMissingPrice)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {engravingTotalArea > 0 && (
+                    <div className="flex flex-col text-sm border-b border-gray-100 pb-2 mb-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Gravura ({engravingTotalArea.toFixed(2)}m²)</span>
+                        <span className="font-medium text-gray-900">
+                          {formatCurrency(engravingTotalArea * ENGRAVING_PRICE_PER_SQM)}
+                        </span>
+                      </div>
+                      {engravingMissingArea > 0 && (
+                        <div className="flex items-center justify-between text-amber-600 mt-1">
+                          <span className="text-xs">+ Diferença pedido mínimo (falta {engravingMissingArea.toFixed(2)}m²)</span>
+                          <span className="font-medium">+{formatCurrency(engravingMissingPrice)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {productsTotal > 0 && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Total Produtos</span>
