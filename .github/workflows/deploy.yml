@@ -25,14 +25,16 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
       - name: Deploy via rsync over SSH
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_PORT: ${{ secrets.SSH_PORT }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          SOURCE: "out/"
-          TARGET: "/home/u759881874/domains/ateliedeimpressao.com.br/public_html/"
-          ARGS: "-rlgoDzvc -i --delete"
-          EXCLUDE: ".htaccess"
+        run: |
+          rsync -rlgoDzvc -i --delete \
+            --exclude='.htaccess' \
+            -e "ssh -p ${{ secrets.SSH_PORT }} -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            out/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u759881874/domains/ateliedeimpressao.com.br/public_html/
