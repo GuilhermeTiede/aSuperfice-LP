@@ -1,0 +1,38 @@
+name: Build & Deploy to Shared Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy via rsync over SSH
+        uses: easingthemes/ssh-deploy@v5
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          SOURCE: "out/"
+          TARGET: "/home/u759881874/domains/ateliedeimpressao.com.br/public_html/"
+          ARGS: "-rlgoDzvc -i --delete"
+          EXCLUDE: ".htaccess"
