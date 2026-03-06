@@ -194,11 +194,28 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
   const CANVAS_PRICE_PER_SQM = PRODUCT_OPTIONS.find((p) => p.id === "canvas")?.price || 350;
   const ENGRAVING_PRICE_PER_SQM = PRODUCT_OPTIONS.find((p) => p.id === "engraving")?.price || 200;
 
-  const canvasMissingArea = canvasTotalArea > 0 && canvasTotalArea < 2 ? 2 - canvasTotalArea : 0;
+  const MIN_FINE_ART_AREA = 1;
+
+  const canvasMissingArea = canvasTotalArea > 0 && canvasTotalArea < MIN_FINE_ART_AREA ? MIN_FINE_ART_AREA - canvasTotalArea : 0;
   const canvasMissingPrice = canvasMissingArea * CANVAS_PRICE_PER_SQM;
 
-  const engravingMissingArea = engravingTotalArea > 0 && engravingTotalArea < 2 ? 2 - engravingTotalArea : 0;
+  const engravingMissingArea = engravingTotalArea > 0 && engravingTotalArea < MIN_FINE_ART_AREA ? MIN_FINE_ART_AREA - engravingTotalArea : 0;
   const engravingMissingPrice = engravingMissingArea * ENGRAVING_PRICE_PER_SQM;
+
+  // Grouped totals per product type for invoice-style summary
+  const productGroups = (() => {
+    const groups: { id: ProductType; label: string; area: number; price: number; count: number }[] = [];
+    const types: ProductType[] = ["wallpaper", "vinyl", "canvas", "engraving", "sample_kit", "installation"];
+    for (const type of types) {
+      const typeWalls = walls.filter((w) => w.product === type);
+      if (typeWalls.length === 0) continue;
+      const area = typeWalls.reduce((acc, w) => acc + calculateWallArea(w), 0);
+      const price = typeWalls.reduce((acc, w) => acc + calculateWallPrice(w), 0);
+      const label = PRODUCT_OPTIONS.find((p) => p.id === type)?.label || type;
+      groups.push({ id: type, label, area, price, count: typeWalls.length });
+    }
+    return groups;
+  })();
 
   const productsTotal =
     walls.reduce(
@@ -380,7 +397,7 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
           return `- ${wallLabel}: Kit de Amostras\n  Preço: ${formatCurrency(SAMPLE_KIT_PRICE)}`;
         }
 
-        return `- ${wallLabel}: ${wall.height}cm x ${wall.width}cm (${productName})\n  Estimativa: ${formatCurrency(price)} (inclui Montagem e prova de cor)${installationText}${files ? "\n" + files : ""}`;
+        return `- ${wallLabel}: ${wall.width}cm x ${wall.height}cm (${productName})\n  Estimativa: ${formatCurrency(price)} (inclui Montagem e prova de cor)${installationText}${files ? "\n" + files : ""}`;
       })
       .join("\n\n");
 
@@ -389,7 +406,7 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
 *Detalhes do Projeto:*
 ${projectDetails}
 
-${canvasMissingArea > 0 ? `* Taxa Pedido Mínimo (Canvas - falta ${canvasMissingArea.toFixed(2)}m²): *+${formatCurrency(canvasMissingPrice)}*\n` : ""}${engravingMissingArea > 0 ? `* Taxa Pedido Mínimo (Gravura - falta ${engravingMissingArea.toFixed(2)}m²): *+${formatCurrency(engravingMissingPrice)}*\n` : ""}
+${canvasMissingArea > 0 ? `⚠ Pedido Mínimo Canvas (${MIN_FINE_ART_AREA}m²) — falta ${canvasMissingArea.toFixed(2)}m²: *+${formatCurrency(canvasMissingPrice)}*\n` : ""}${engravingMissingArea > 0 ? `⚠ Pedido Mínimo Gravura (${MIN_FINE_ART_AREA}m²) — falta ${engravingMissingArea.toFixed(2)}m²: *+${formatCurrency(engravingMissingPrice)}*\n` : ""}
 *Total Geral Estimado:* ${formatCurrency(totalPrice)}
 ${generalNotes ? `\n*Observações Gerais:*\n${generalNotes}` : ""}
 
@@ -459,7 +476,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                     Medidas e Material
                   </label>
                   <p className="text-xs text-gray-500">
-                    Informe altura, largura e material para cada área
+                    Informe largura, altura e material para cada área
                   </p>
                 </div>
 
@@ -509,24 +526,6 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="text-xs text-gray-500 mb-1 block">
-                            Altura (cm)
-                          </label>
-                          <input
-                            type="number"
-                            placeholder="250"
-                            value={wall.height || ""}
-                            onChange={(e) =>
-                              updateWall(
-                                wall.id,
-                                "height",
-                                Number.parseInt(e.target.value) || 0,
-                              )
-                            }
-                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-xs text-gray-500 mb-1 block">
                             Largura (cm)
                           </label>
                           <input
@@ -537,6 +536,24 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                               updateWall(
                                 wall.id,
                                 "width",
+                                Number.parseInt(e.target.value) || 0,
+                              )
+                            }
+                            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-black transition-colors"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-500 mb-1 block">
+                            Altura (cm)
+                          </label>
+                          <input
+                            type="number"
+                            placeholder="250"
+                            value={wall.height || ""}
+                            onChange={(e) =>
+                              updateWall(
+                                wall.id,
+                                "height",
                                 Number.parseInt(e.target.value) || 0,
                               )
                             }
@@ -662,70 +679,86 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 </div>
               </div>
 
-              {/* Total Summary */}
+              {/* Total Summary — Invoice-style */}
               {totalPrice > 0 && (
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
-                  {canvasTotalArea > 0 && (
-                    <div className="flex flex-col text-sm border-b border-gray-100 pb-2 mb-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Canvas ({canvasTotalArea.toFixed(2)}m²)</span>
-                        <span className="font-medium text-gray-900">
-                          {formatCurrency(canvasTotalArea * CANVAS_PRICE_PER_SQM)}
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-0">
+                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Resumo do Projeto</p>
+
+                  {productGroups.map((group) => (
+                    <div key={group.id} className="py-2 border-b border-gray-100 last:border-b-0">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-700">
+                          {group.label}
+                          {group.id !== "sample_kit" && group.area > 0 && (
+                            <span className="text-gray-400 ml-1 text-xs">
+                              ({group.area.toFixed(2)}m² · {group.count === 1 ? "1 item" : `${group.count} itens`})
+                            </span>
+                          )}
+                          {group.id === "sample_kit" && (
+                            <span className="text-gray-400 ml-1 text-xs">
+                              ({group.count === 1 ? "1 kit" : `${group.count} kits`})
+                            </span>
+                          )}
+                        </span>
+                        <span className="font-medium text-gray-900 tabular-nums">
+                          {formatCurrency(group.price)}
                         </span>
                       </div>
-                      {canvasMissingArea > 0 && (
-                        <div className="flex items-center justify-between text-amber-600 mt-1">
-                          <span className="text-xs">+ Diferença pedido mínimo (falta {canvasMissingArea.toFixed(2)}m²)</span>
-                          <span className="font-medium">+{formatCurrency(canvasMissingPrice)}</span>
+
+                      {/* Canvas — pedido mínimo */}
+                      {group.id === "canvas" && canvasMissingArea > 0 && (
+                        <div className="flex items-center justify-between mt-1 ml-2">
+                          <span className="text-xs text-amber-600">
+                            ↳ Pedido mínimo ({MIN_FINE_ART_AREA}m²) · falta {canvasMissingArea.toFixed(2)}m²
+                          </span>
+                          <span className="text-xs font-medium text-amber-600 tabular-nums">
+                            +{formatCurrency(canvasMissingPrice)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Gravura — pedido mínimo */}
+                      {group.id === "engraving" && engravingMissingArea > 0 && (
+                        <div className="flex items-center justify-between mt-1 ml-2">
+                          <span className="text-xs text-amber-600">
+                            ↳ Pedido mínimo ({MIN_FINE_ART_AREA}m²) · falta {engravingMissingArea.toFixed(2)}m²
+                          </span>
+                          <span className="text-xs font-medium text-amber-600 tabular-nums">
+                            +{formatCurrency(engravingMissingPrice)}
+                          </span>
                         </div>
                       )}
                     </div>
-                  )}
+                  ))}
 
-                  {engravingTotalArea > 0 && (
-                    <div className="flex flex-col text-sm border-b border-gray-100 pb-2 mb-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Gravura ({engravingTotalArea.toFixed(2)}m²)</span>
-                        <span className="font-medium text-gray-900">
-                          {formatCurrency(engravingTotalArea * ENGRAVING_PRICE_PER_SQM)}
+                  {/* Subtotais */}
+                  {productsTotal > 0 && servicesTotal > 0 && (
+                    <div className="pt-3 mt-1 border-t border-gray-200 space-y-1">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">Subtotal Produtos</span>
+                        <span className="font-medium text-gray-700 tabular-nums">
+                          {formatCurrency(productsTotal)}
                         </span>
                       </div>
-                      {engravingMissingArea > 0 && (
-                        <div className="flex items-center justify-between text-amber-600 mt-1">
-                          <span className="text-xs">+ Diferença pedido mínimo (falta {engravingMissingArea.toFixed(2)}m²)</span>
-                          <span className="font-medium">+{formatCurrency(engravingMissingPrice)}</span>
-                        </div>
-                      )}
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">Subtotal Serviços</span>
+                        <span className="font-medium text-gray-700 tabular-nums">
+                          {formatCurrency(servicesTotal)}
+                        </span>
+                      </div>
                     </div>
                   )}
 
-                  {productsTotal > 0 && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Total Produtos</span>
-                      <span className="font-medium text-gray-900">
-                        {formatCurrency(productsTotal)}
-                      </span>
-                    </div>
-                  )}
-
-                  {servicesTotal > 0 && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Total Serviços</span>
-                      <span className="font-medium text-gray-900">
-                        {formatCurrency(servicesTotal)}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="pt-2 mt-2 border-t border-gray-200 flex items-center justify-between text-base">
+                  {/* Total */}
+                  <div className="pt-3 mt-2 border-t-2 border-gray-300 flex items-center justify-between text-base">
                     <span className="font-semibold text-gray-900">
                       Total Estimado
                     </span>
-                    <span className="font-bold text-lg text-gray-900">
+                    <span className="font-bold text-lg text-gray-900 tabular-nums">
                       {formatCurrency(totalPrice)}
                     </span>
                   </div>
-                  <p className="text-[10px] text-gray-400">
+                  <p className="text-[10px] text-gray-400 pt-1">
                     *Valor aproximado. O orçamento final será enviado após
                     análise técnica.
                     <br />* Valor já incluso montagem e prova de cor.
@@ -757,7 +790,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                     </a>
                     {!isValid && !isUploading && (
                       <p className="text-xs text-amber-600 text-center">
-                        Insira altura e largura para continuar
+                        Insira largura e altura para continuar
                       </p>
                     )}
                   </>
