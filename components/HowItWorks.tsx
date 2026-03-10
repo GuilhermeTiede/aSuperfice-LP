@@ -61,6 +61,9 @@ export function HowItWorks() {
           <h2 className="text-5xl md:text-6xl font-serif text-gray-900 font-medium">
             Do arquivo à parede, sem dor de cabeça
           </h2>
+          <p className="text-gray-500 font-light text-lg mt-4 max-w-xl mx-auto">
+            Você envia a imagem, a gente cuida de tudo — da análise técnica à instalação na sua parede.
+          </p>
         </motion.div>
 
         <div className="max-w-4xl mx-auto">

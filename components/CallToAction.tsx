@@ -20,11 +20,13 @@ export function CallToAction() {
     <section id="contact" className="py-32 bg-white text-center">
       <div className="container mx-auto px-6 max-w-4xl">
         <h2 className="text-5xl md:text-6xl font-serif text-gray-900 mb-8">
-          Vamos transformar seu projeto em uma superfície real
+          Calcule o preço do seu papel de parede agora
         </h2>
-        <p className="text-xl text-gray-600 font-light mb-12 max-w-2xl mx-auto">
-          Se você busca impressão premium com suporte técnico, fale com a
-          gente.
+        <p className="text-xl text-gray-600 font-light mb-4 max-w-2xl mx-auto">
+          Insira as medidas, veja o valor e finalize pelo WhatsApp — simples assim.
+        </p>
+        <p className="text-sm text-gray-400 mb-12">
+          ✓ Orçamento grátis · ✓ Sem compromisso · ✓ Resposta em minutos
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

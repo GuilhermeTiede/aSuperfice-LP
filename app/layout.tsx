@@ -25,24 +25,24 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Impressão de Grande Formato | Ateliê de Impressão aSuperfície",
+  title: "Papel de Parede Personalizado RJ | Calcule o Preço Online | aSuperfície",
   description:
-    "Impressão de grande formato para arquitetos, designers e artistas. Papel de parede personalizado, murais panorâmicos e soluções corporativas com materiais premium, fidelidade de cor e suporte técnico.",
+    "Papel de parede personalizado no Rio de Janeiro. Calcule o preço online em 30 segundos, escolha o material e finalize pelo WhatsApp. Impressão premium com instalação.",
   keywords: [
-    "impressão grande formato",
-    "impressão para arquitetos",
     "papel de parede personalizado",
-    "murais panorâmicos",
-    "impressão premium",
-    "impressão para decoração",
-    "impressão corporativa",
-    "wall art",
-    "superfícies arquitetônicas",
+    "papel de parede personalizado RJ",
+    "papel de parede sob medida",
+    "papel de parede com foto",
+    "adesivo de parede personalizado",
+    "impressão grande formato",
+    "mural personalizado",
+    "papel de parede preço",
+    "decoração de parede personalizada",
   ],
   openGraph: {
-    title: "Impressão de Grande Formato | Ateliê de Impressão aSuperfície",
+    title: "Papel de Parede Personalizado RJ | Calcule o Preço Online | aSuperfície",
     description:
-      "Impressão de grande formato e soluções premium para arquitetos, designers e artistas. Consultoria técnica, materiais selecionados e acabamento excepcional.",
+      "Papel de parede personalizado no Rio de Janeiro. Calcule o preço em 30 segundos, escolha o material e finalize pelo WhatsApp. Impressão premium com instalação.",
     type: "website",
     locale: "pt_BR",
   },

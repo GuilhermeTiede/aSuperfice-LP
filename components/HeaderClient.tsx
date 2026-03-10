@@ -61,7 +61,7 @@ export function HeaderClient() {
           <Link
             key={item.name}
             href={item.href}
-            className="text-sm uppercase tracking-widest text-gray-600 hover:text-black transition-colors"
+            className="text-sm uppercase tracking-widest text-gray-600 hover:text-black transition-colors whitespace-nowrap"
           >
             {item.name}
           </Link>

@@ -6,6 +6,16 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
+    question: "Quanto custa um papel de parede personalizado?",
+    answer:
+      "O preço é calculado por metro quadrado. Para papel de parede, o valor parte de R$ 130/m². Use nossa calculadora na página para inserir as medidas da sua parede e ver o valor na hora — é grátis e sem compromisso.",
+  },
+  {
+    question: "Em quanto tempo fico pronto?",
+    answer:
+      "O prazo médio de produção é de 5 a 7 dias úteis após aprovação do arquivo e pagamento. Para projetos urgentes, consulte nossa equipe pelo WhatsApp para verificar disponibilidade de prazo expresso.",
+  },
+  {
     question: "Vocês fazem impressão a partir da minha arte?",
     answer:
       "Sim. Você envia o arquivo e nós orientamos o melhor formato, tamanho e material para garantir a melhor qualidade de impressão.",

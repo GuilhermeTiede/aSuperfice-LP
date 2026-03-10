@@ -65,9 +65,19 @@ interface QuoteCalculatorProps {
   isOpen: boolean;
   onClose: () => void;
   source?: string;
+  initialWall?: { height: number; width: number; product: string; includeInstallation: boolean } | null;
 }
 
-export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCalculatorProps) {
+const DEFAULT_WALL: Wall = {
+  id: "1",
+  height: 0,
+  width: 0,
+  product: "wallpaper",
+  files: [],
+  includeInstallation: false,
+};
+
+export function QuoteCalculator({ isOpen, onClose, source = "unknown", initialWall }: QuoteCalculatorProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -81,16 +91,33 @@ export function QuoteCalculator({ isOpen, onClose, source = "unknown" }: QuoteCa
     }
   }, [isOpen, source]);
 
-  const [walls, setWalls] = useState<Wall[]>([
-    {
-      id: "1",
-      height: 0,
-      width: 0,
-      product: "wallpaper",
-      files: [],
-      includeInstallation: false,
-    },
-  ]);
+  const [walls, setWalls] = useState<Wall[]>([{ ...DEFAULT_WALL }]);
+
+  // When opening with initialWall data from inline calculator, pre-fill first wall
+  useEffect(() => {
+    if (isOpen && initialWall) {
+      setWalls([
+        {
+          id: "1",
+          height: initialWall.height,
+          width: initialWall.width,
+          product: (initialWall.product as ProductType) || "wallpaper",
+          files: [],
+          includeInstallation: initialWall.includeInstallation,
+        },
+        {
+          id: Date.now().toString(),
+          height: 0,
+          width: 0,
+          product: "wallpaper",
+          files: [],
+          includeInstallation: false,
+        },
+      ]);
+    } else if (isOpen && !initialWall) {
+      setWalls([{ ...DEFAULT_WALL }]);
+    }
+  }, [isOpen, initialWall]);
   const [generalNotes, setGeneralNotes] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -417,22 +444,44 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
     return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   };
 
-  const handleWhatsAppSubmit = () => {
+  const handleWhatsAppSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setSubmitted(true);
+    
     // Track evento de submissão do formulário
     const products = walls.map((w) => w.product);
     const hasInstallation = walls.some((w) => w.includeInstallation);
     const hasFiles = walls.some((w) => w.files.length > 0);
+    
+    // Gera a URL antes de qualquer coisa
+    const whatsappUrl = generateWhatsAppMessage();
+    
+    // Flag para evitar abrir WhatsApp duas vezes
+    let opened = false;
+    const openWhatsApp = () => {
+      if (!opened) {
+        opened = true;
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      }
+    };
 
-    trackCalculatorSubmitted({
-      total_value: totalPrice,
-      num_walls: walls.length,
-      products,
-      has_installation: hasInstallation,
-      has_files: hasFiles,
-    });
-
+    // Track WhatsApp click primeiro (usa beacon)
     trackWhatsAppClick("calculator_form", "structured_quote");
+    
+    // Track conversão e redireciona após callback
+    trackCalculatorSubmitted(
+      {
+        total_value: totalPrice,
+        num_walls: walls.length,
+        products,
+        has_installation: hasInstallation,
+        has_files: hasFiles,
+      },
+      openWhatsApp
+    );
+    
+    // Fallback: se o callback não disparar em 500ms, abre o WhatsApp mesmo assim
+    setTimeout(openWhatsApp, 500);
   };
 
   if (!mounted) return null;
@@ -774,20 +823,18 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
                 ) && !isUploading;
                 return (
                   <>
-                    <a
-                      href={generateWhatsAppMessage()}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
                       onClick={handleWhatsAppSubmit}
+                      disabled={!isValid}
                       className={`w-full py-4 rounded-none font-medium flex items-center justify-center gap-2 transition-all shadow-lg ${
                         isValid
-                          ? "bg-green-600 hover:bg-green-700 text-white"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
+                          ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
                       }`}
                     >
                       <MessageCircle className="w-5 h-5" />
                       {isUploading ? "Enviando arquivos..." : "Continuar no WhatsApp"}
-                    </a>
+                    </button>
                     {!isValid && !isUploading && (
                       <p className="text-xs text-amber-600 text-center">
                         Insira largura e altura para continuar

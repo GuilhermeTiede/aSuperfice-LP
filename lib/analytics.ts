@@ -42,16 +42,20 @@ export const trackCalculatorOpened = (source: string) => {
 
 /**
  * Evento: Usuário enviou o formulário da calculadora (clicou "Continuar no WhatsApp")
- * Também dispara conversão do Google Ads com callback para garantir registro
+ * Também dispara conversão do Google Ads com beacon para garantir envio mesmo durante navegação
+ * @param callback - Função a ser chamada após os eventos serem enviados (para redirect)
  */
-export const trackCalculatorSubmitted = (params: {
-  total_value: number;
-  num_walls: number;
-  products: string[];
-  has_installation: boolean;
-  has_files: boolean;
-}) => {
-  // Evento GA4
+export const trackCalculatorSubmitted = (
+  params: {
+    total_value: number;
+    num_walls: number;
+    products: string[];
+    has_installation: boolean;
+    has_files: boolean;
+  },
+  callback?: () => void
+) => {
+  // Evento GA4 com beacon
   trackEvent("calculator_submitted", {
     value: params.total_value,
     currency: "BRL",
@@ -61,14 +65,20 @@ export const trackCalculatorSubmitted = (params: {
     has_files: String(params.has_files),
   });
 
-  // Conversão Google Ads - Enviar formulário de lead (clique)
+  // Conversão Google Ads - Enviar formulário de lead com beacon
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", "conversion", {
       send_to: "AW-17950674353/QqXwCKqjmvgbELGbxu9C",
-      value: 1.0,
+      value: params.total_value,
       currency: "BRL",
-      event_callback: () => {},
+      transport_type: "beacon",
+      event_callback: () => {
+        if (callback) callback();
+      },
     });
+  } else if (callback) {
+    // Fallback se gtag não estiver disponível
+    callback();
   }
 };
 
