@@ -56,19 +56,19 @@ export function HeaderClient() {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center gap-8">
+      <nav className="hidden lg:flex items-center gap-4 xl:gap-8">
         {navItems.map((item) => (
           <Link
             key={item.name}
             href={item.href}
-            className="text-sm uppercase tracking-widest text-gray-600 hover:text-black transition-colors whitespace-nowrap"
+            className="text-xs xl:text-sm uppercase tracking-widest text-gray-600 hover:text-black transition-colors whitespace-nowrap"
           >
             {item.name}
           </Link>
         ))}
         <button
           onClick={() => openCalculator("header")}
-          className="bg-black text-white px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none"
+          className="bg-black text-white px-4 xl:px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none whitespace-nowrap"
         >
           Solicitar Orçamento
         </button>
@@ -76,7 +76,7 @@ export function HeaderClient() {
 
       {/* Mobile Menu Toggle */}
       <button
-        className="md:hidden z-50 p-2"
+        className="lg:hidden z-50 p-2"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
@@ -90,7 +90,7 @@ export function HeaderClient() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center gap-8 md:hidden"
+            className="absolute top-0 left-0 w-full h-screen bg-white flex flex-col items-center justify-center gap-8 lg:hidden"
           >
             {navItems.map((item) => (
               <Link

@@ -97,7 +97,7 @@ const criticalCSS = `
   .animate-fade-in{animation:fade-in 1s ease-out forwards}
   .animate-fade-in-up{animation:fade-in-up .6s ease-out forwards}
   @media(min-width:768px){.md\\:text-7xl{font-size:4.5rem;line-height:1}.md\\:text-xl{font-size:1.25rem;line-height:1.75rem}.md\\:flex{display:flex}.md\\:hidden{display:none}}
-  @media(min-width:1024px){.lg\\:text-8xl{font-size:6rem;line-height:1}}
+  @media(min-width:1024px){.lg\\:text-8xl{font-size:6rem;line-height:1}.lg\\:flex{display:flex}.lg\\:hidden{display:none}}
 `;
 
 export default function RootLayout({

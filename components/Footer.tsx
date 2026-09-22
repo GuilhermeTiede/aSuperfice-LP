@@ -9,7 +9,7 @@ export function Footer() {
     <footer className="bg-gray-950 text-white py-16 border-t border-gray-900">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <Link href="/" className="flex items-center mb-6">
+          <Link href="/" className="flex shrink-0 items-center mb-6">
             <Image
               src="/logos/assinatura-art-print-branco.svg"
               alt="aSuperficie art print"

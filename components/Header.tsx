@@ -11,7 +11,7 @@ export function Header() {
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo - renderizado no servidor para LCP rápido */}
-        <Link href="/" className="flex items-center z-50">
+        <Link href="/" className="flex shrink-0 items-center z-50">
           <Image
             src="/logos/assinatura-art-print.svg"
             alt="aSuperficie art print"
