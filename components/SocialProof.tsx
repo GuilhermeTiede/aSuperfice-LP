@@ -63,7 +63,7 @@ export function SocialProof() {
     <section className="py-20 bg-white border-b border-gray-100">
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center justify-center mb-12 space-y-4">
-          <p className="text-center text-xs uppercase tracking-[0.2em] text-gray-400">
+          <p className="text-center text-xs font-label uppercase tracking-[0.2em] text-gray-400">
             Quem Imprime com a Gente
           </p>
           <p className="text-center text-gray-500 font-light text-sm max-w-lg">

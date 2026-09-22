@@ -61,14 +61,14 @@ export function HeaderClient() {
           <Link
             key={item.name}
             href={item.href}
-            className="text-xs xl:text-sm uppercase tracking-widest text-gray-600 hover:text-black transition-colors whitespace-nowrap"
+            className="text-xs xl:text-sm font-label uppercase tracking-widest text-gray-600 hover:text-black transition-colors whitespace-nowrap"
           >
             {item.name}
           </Link>
         ))}
         <button
           onClick={() => openCalculator("header")}
-          className="bg-black text-white px-4 xl:px-6 py-2.5 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none whitespace-nowrap"
+          className="bg-black text-white px-4 xl:px-6 py-2.5 text-xs font-label uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none whitespace-nowrap"
         >
           Solicitar Orçamento
         </button>
@@ -107,7 +107,7 @@ export function HeaderClient() {
                 setIsOpen(false);
                 openCalculator("header_mobile");
               }}
-              className="mt-4 bg-black text-white px-8 py-3 text-sm uppercase tracking-widest rounded-none"
+              className="mt-4 bg-black text-white px-8 py-3 text-sm font-label uppercase tracking-widest rounded-none"
             >
               Solicitar Orçamento
             </button>

@@ -47,7 +47,7 @@ export function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-500 mb-6 block">
+              <span className="text-xs font-medium font-label uppercase tracking-[0.3em] text-gray-500 mb-6 block">
                 O que é o Ateliê de Impressão?
               </span>
               <h2 className="text-5xl md:text-7xl lg:text-7xl font-serif mb-10 leading-tight text-gray-900">
@@ -110,10 +110,10 @@ export function About() {
             viewport={{ once: true }}
             className="mb-16 max-w-4xl"
           >
-            <span className="text-sm uppercase tracking-[0.2em] text-white/70 mb-4 block font-bold">
+            <span className="text-sm font-label uppercase tracking-[0.2em] text-white/70 mb-4 block font-medium">
               Para quem é
             </span>
-            <h2 className="text-5xl md:text-7xl font-serif font-medium text-white">
+            <h2 className="text-5xl md:text-7xl font-serif text-white">
               Feito para profissionais exigentes
             </h2>
           </motion.div>

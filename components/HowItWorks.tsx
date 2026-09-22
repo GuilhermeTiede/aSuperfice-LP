@@ -55,10 +55,10 @@ export function HowItWorks() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+          <span className="text-sm font-label uppercase tracking-[0.2em] text-gray-500 mb-4 block font-medium">
             Como funciona
           </span>
-          <h2 className="text-5xl md:text-6xl font-serif text-gray-900 font-medium">
+          <h2 className="text-5xl md:text-6xl font-serif text-gray-900">
             Do arquivo à parede, sem dor de cabeça
           </h2>
           <p className="text-gray-500 font-light text-lg mt-4 max-w-xl mx-auto">
@@ -123,7 +123,7 @@ export function HowItWorks() {
         >
           <button
             onClick={() => openCalculator("how_it_works")}
-            className="group inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none shadow-lg"
+            className="group inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm font-label uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none shadow-lg"
           >
             Começar meu projeto
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

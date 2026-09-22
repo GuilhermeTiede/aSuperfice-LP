@@ -47,7 +47,7 @@ export function FloatingCTA() {
             aria-label="Solicitar orçamento"
           >
             <Calculator className="w-6 h-6 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
-            <span className="text-xs uppercase tracking-widest font-medium hidden sm:inline">
+            <span className="text-xs font-label uppercase tracking-widest font-medium hidden sm:inline">
               Calcular preço
             </span>
           </button>

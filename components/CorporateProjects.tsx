@@ -32,10 +32,10 @@ export function CorporateProjects() {
             transition={{ duration: 0.8 }}
             className="order-2 md:order-1"
           >
-            <span className="text-sm uppercase tracking-[0.2em] text-gray-400 mb-4 block font-bold">
+            <span className="text-sm font-label uppercase tracking-[0.2em] text-gray-400 mb-4 block font-medium">
               Projetos corporativos e empresariais
             </span>
-            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-white font-medium">
+            <h2 className="text-5xl md:text-6xl font-serif mb-8 text-white">
               Soluções para grandes marcas e espaços complexos
             </h2>
             <p className="text-gray-300 text-lg font-light mb-8 leading-relaxed">
@@ -59,7 +59,7 @@ export function CorporateProjects() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick("corporate_section", "specialist")}
-              className="group inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm uppercase tracking-widest hover:bg-gray-200 transition-all rounded-none"
+              className="group inline-flex items-center gap-3 bg-white text-black px-8 py-4 text-sm font-label uppercase tracking-widest hover:bg-gray-200 transition-all rounded-none"
             >
               Falar com um especialista
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

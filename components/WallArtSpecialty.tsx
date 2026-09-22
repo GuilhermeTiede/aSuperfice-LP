@@ -249,7 +249,7 @@ export function WallArtSpecialty() {
             transition={{ duration: 0.8 }}
             className="mb-12"
           >
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-gray-400 mb-6 block">
+            <span className="text-xs font-medium font-label uppercase tracking-[0.3em] text-gray-400 mb-6 block">
               Especialidade
             </span>
             <h2 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-10 leading-tight">

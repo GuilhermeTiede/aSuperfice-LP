@@ -80,7 +80,7 @@ function FAQItem({
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between py-6 text-left group"
       >
-        <h3 className="text-base md:text-lg font-medium text-gray-900 pr-8 group-hover:text-black transition-colors">
+        <h3 className="font-sans text-base md:text-lg font-medium text-gray-900 pr-8 group-hover:text-black transition-colors">
           {question}
         </h3>
         <ChevronDown
@@ -116,10 +116,10 @@ export function FAQ() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+          <span className="text-sm font-label uppercase tracking-[0.2em] text-gray-500 mb-4 block font-medium">
             Dúvidas frequentes
           </span>
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-900 font-medium">
+          <h2 className="text-4xl md:text-5xl font-serif text-gray-900">
             Perguntas Frequentes
           </h2>
         </motion.div>

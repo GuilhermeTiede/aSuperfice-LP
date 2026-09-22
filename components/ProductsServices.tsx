@@ -98,7 +98,7 @@ export function ProductsServices() {
     <section id="products" className="pt-24 pb-0 bg-gray-50/50">
       <div className="container mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <span className="text-lg font-bold uppercase tracking-[0.2em] text-gray-900 mb-4 block">
+          <span className="text-lg font-medium font-label uppercase tracking-[0.2em] text-gray-900 mb-4 block">
             O Que Oferecemos
           </span>
           <h2 className="text-5xl md:text-6xl font-serif text-gray-900 mb-6">
@@ -117,10 +117,10 @@ export function ProductsServices() {
             <div key={group.category}>
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-gray-200 pb-6 gap-4">
                 <div className="md:w-full">
-                  <span className="text-sm font-bold uppercase tracking-[0.3em] text-gray-500 mb-2 block">
+                  <span className="text-sm font-medium font-label uppercase tracking-[0.3em] text-gray-500 mb-2 block">
                     {group.category}
                   </span>
-                  <h3 className="text-5xl md:text-6xl font-serif text-gray-900 mb-4 font-medium leading-tight">
+                  <h3 className="text-5xl md:text-6xl font-serif text-gray-900 mb-4 leading-tight">
                     {group.description}
                   </h3>
                 </div>
@@ -168,7 +168,7 @@ export function ProductsServices() {
                         {item.description}
                       </p>
 
-                      <span className="inline-flex items-center text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-black transition-colors mt-auto">
+                      <span className="inline-flex items-center text-xs font-medium font-label uppercase tracking-widest text-gray-400 group-hover:text-black transition-colors mt-auto">
                         Solicitar Orçamento
                         <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                       </span>
@@ -187,7 +187,7 @@ export function ProductsServices() {
           </p>
           <button
             onClick={() => openCalculator("product_card")}
-            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none"
+            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm font-label uppercase tracking-widest hover:bg-gray-800 transition-all rounded-none"
           >
             Solicitar Orçamento
             <ArrowRight className="w-4 h-4" />

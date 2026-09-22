@@ -42,7 +42,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">
+          <h4 className="text-sm font-medium font-label uppercase tracking-widest text-gray-500 mb-6">
             Localização
           </h4>
           <div className="flex items-start gap-3 text-gray-300 font-light">
@@ -58,7 +58,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">
+          <h4 className="text-sm font-medium font-label uppercase tracking-widest text-gray-500 mb-6">
             Mapa do Site
           </h4>
           <ul className="space-y-3 font-light text-gray-300">

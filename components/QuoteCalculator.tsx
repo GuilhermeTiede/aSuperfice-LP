@@ -731,7 +731,7 @@ Gostaria de agendar uma consultoria para discutir detalhes.`;
               {/* Total Summary — Invoice-style */}
               {totalPrice > 0 && (
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-0">
-                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Resumo do Projeto</p>
+                  <p className="text-[11px] font-medium text-gray-500 font-label uppercase tracking-wider mb-3">Resumo do Projeto</p>
 
                   {productGroups.map((group) => (
                     <div key={group.id} className="py-2 border-b border-gray-100 last:border-b-0">

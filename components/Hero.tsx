@@ -27,10 +27,10 @@ export function Hero() {
       {/* Conteúdo principal - renderizado imediatamente para LCP */}
       <div className="container mx-auto px-6 relative z-10 text-center">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4 font-bold">
+          <p className="text-xs font-label uppercase tracking-[0.3em] text-gray-500 mb-4 font-medium">
             Ateliê de Impressão · Rio de Janeiro
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-tight text-gray-900 mb-6">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif leading-tight text-gray-900 mb-6">
             Papel de Parede <br /> Personalizado
           </h1>
           <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
@@ -40,7 +40,7 @@ export function Hero() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <button
               onClick={() => openCalculator("hero")}
-              className="group bg-black text-white px-10 py-5 text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none shadow-lg"
+              className="group bg-black text-white px-10 py-5 text-sm font-label uppercase tracking-widest flex items-center gap-3 hover:bg-gray-800 transition-all rounded-none shadow-lg"
             >
               Calcular Preço Agora
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -51,7 +51,7 @@ export function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick("hero_section", "direct")}
-              className="group border border-gray-400 text-gray-700 px-8 py-4 text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-gray-100 transition-all rounded-none"
+              className="group border border-gray-400 text-gray-700 px-8 py-4 text-xs font-label uppercase tracking-widest flex items-center gap-3 hover:bg-gray-100 transition-all rounded-none"
             >
               <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
               Fale pelo WhatsApp

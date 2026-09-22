@@ -32,7 +32,7 @@ export function CallToAction() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={() => openCalculator("cta_final")}
-            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none shadow-lg"
+            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 text-sm font-label uppercase tracking-widest hover:bg-gray-800 transition-colors rounded-none shadow-lg"
           >
             Solicitar Orçamento
             <ArrowRight className="w-4 h-4" />
@@ -41,7 +41,7 @@ export function CallToAction() {
             href={generateWhatsAppLink()}
             target="_blank"
             onClick={() => trackWhatsAppClick("cta_final", "direct")}
-            className="inline-flex items-center gap-3 border border-gray-300 text-gray-700 px-10 py-5 text-xs uppercase tracking-widest hover:bg-gray-100 transition-colors rounded-none"
+            className="inline-flex items-center gap-3 border border-gray-300 text-gray-700 px-10 py-5 text-xs font-label uppercase tracking-widest hover:bg-gray-100 transition-colors rounded-none"
           >
             <MessageCircle className="w-4 h-4" />
             Fale pelo Whatsapp

@@ -45,10 +45,10 @@ export function Materials() {
           viewport={{ once: true }}
           className="mb-16 md:mb-24 text-center max-w-3xl mx-auto"
         >
-          <span className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 block font-bold">
+          <span className="text-sm font-label uppercase tracking-[0.2em] text-gray-500 mb-4 block font-medium">
             Materiais
           </span>
-          <h2 className="text-5xl md:text-6xl font-serif mb-6 font-medium">
+          <h2 className="text-5xl md:text-6xl font-serif mb-6">
             Resultados com um toque de sofisticação
           </h2>
           <p className="text-gray-600 font-light text-lg">

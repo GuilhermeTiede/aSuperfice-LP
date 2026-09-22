@@ -1,18 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
+import { Fraunces, Hanken_Grotesk, Jost } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
   display: "swap",
   preload: true,
 });
 
-const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-cormorant-garamond",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: true,
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
   display: "swap",
   preload: true,
 });
@@ -66,7 +73,7 @@ const criticalCSS = `
   *,*::before,*::after{box-sizing:border-box;border:0 solid}
   html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,sans-serif}
   body{margin:0;line-height:inherit;background-color:#fcfbf8;color:#0c0a09}
-  h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}
+  h1,h2,h3,h4,h5,h6{font-family:var(--font-fraunces),ui-serif,Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:-0.025em}
   img{display:block;max-width:100%;height:auto}
   .scroll-smooth{scroll-behavior:smooth}
   .antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -78,8 +85,9 @@ const criticalCSS = `
   .overflow-hidden{overflow:hidden}.text-center{text-align:center}
   .bg-white{background-color:#fcfbf8}.bg-transparent{background-color:transparent}
   .text-gray-900{color:#111827}.text-gray-600{color:#4b5563}.text-gray-500{color:#6b7280}
-  .font-serif{font-family:var(--font-cormorant-garamond),ui-serif,serif}
-  .font-sans{font-family:var(--font-inter),ui-sans-serif,system-ui,sans-serif}
+  .font-serif{font-family:var(--font-fraunces),ui-serif,Georgia,"Times New Roman",serif}
+  .font-sans{font-family:var(--font-hanken),ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .font-label{font-family:var(--font-jost),var(--font-hanken),ui-sans-serif,system-ui,sans-serif;font-weight:500}
   .text-5xl{font-size:3rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}
   .font-medium{font-weight:500}.font-light{font-weight:300}
   .leading-tight{line-height:1.25}.leading-relaxed{line-height:1.625}
@@ -144,7 +152,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} ${cormorantGaramond.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
+        className={`${hankenGrotesk.variable} ${fraunces.variable} ${jost.variable} antialiased bg-[var(--color-paper)] text-gray-950 font-sans selection:bg-gray-200 selection:text-black`}
       >
         {children}
       </body>

@@ -95,11 +95,11 @@ export function InlineCalculator() {
           >
             <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full mb-6">
               <Calculator className="w-4 h-4 text-white" />
-              <span className="text-xs uppercase tracking-[0.2em] text-white/80 font-medium">
+              <span className="text-xs font-label uppercase tracking-[0.2em] text-white/80 font-medium">
                 Simulador rápido
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-white font-medium mb-4">
+            <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">
               Quanto custa seu papel de parede?
             </h2>
             <p className="text-gray-400 font-light text-lg max-w-xl mx-auto">
@@ -220,7 +220,7 @@ export function InlineCalculator() {
               <div className="flex flex-col gap-3 shrink-0">
                 <button
                   onClick={handleAddMoreWalls}
-                  className="group bg-white text-gray-900 px-8 py-4 text-sm uppercase tracking-widest font-medium flex items-center gap-3 hover:bg-gray-100 transition-all"
+                  className="group bg-white text-gray-900 px-8 py-4 text-sm font-label uppercase tracking-widest font-medium flex items-center gap-3 hover:bg-gray-100 transition-all"
                 >
                   {estimatedPrice > 0 ? "Adicionar mais paredes" : "Abrir calculadora completa"}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -243,7 +243,7 @@ export function InlineCalculator() {
                         estimated_price: estimatedPrice,
                       });
                     }}
-                    className="group border border-green-500 text-green-400 px-8 py-3 text-xs uppercase tracking-widest font-medium flex items-center justify-center gap-3 hover:bg-green-500/10 transition-all"
+                    className="group border border-green-500 text-green-400 px-8 py-3 text-xs font-label uppercase tracking-widest font-medium flex items-center justify-center gap-3 hover:bg-green-500/10 transition-all"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Finalizar pelo WhatsApp
