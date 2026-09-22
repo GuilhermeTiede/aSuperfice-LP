@@ -46,6 +46,19 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
   },
+  icons: {
+    icon: [
+      { url: "/icons/favicon-artprint.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-artprint.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/icons/apple-artprint.png",
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "art print",
+    statusBarStyle: "default",
+  },
 };
 
 // CSS crítico inline para renderização inicial (above-the-fold)
@@ -124,9 +137,9 @@ export default function RootLayout({
         {/* Preload logo para header */}
         <link
           rel="preload"
-          href="/logo-asuperficie.webp"
+          href="/logos/assinatura-art-print.svg"
           as="image"
-          type="image/webp"
+          type="image/svg+xml"
         />
       </head>
       <body

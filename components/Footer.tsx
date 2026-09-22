@@ -9,22 +9,15 @@ export function Footer() {
     <footer className="bg-gray-950 text-white py-16 border-t border-gray-900">
       <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
-          <Link href="/" className="flex items-center gap-3 mb-6">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-800">
-              <Image
-                src="/logo-ateliedeimpressao.webp"
-                alt="Ateliê de Impressão | aSuperficie"
-                fill
-                className="object-cover"
-                loading="lazy"
-              />
-            </div>
-            <span className="text-2xl font-serif font-bold tracking-tight">
-              Ateliê de Impressão{" "}
-              <span className="font-sans text-lg font-light opacity-60">
-                | aSuperficie
-              </span>
-            </span>
+          <Link href="/" className="flex items-center mb-6">
+            <Image
+              src="/logos/assinatura-art-print-branco.svg"
+              alt="aSuperficie art print"
+              width={480}
+              height={157}
+              className="site-logo"
+              loading="lazy"
+            />
           </Link>
           <p className="text-gray-400 font-light max-w-sm mb-8">
             Impressão de grande formato para arquitetos, designers e

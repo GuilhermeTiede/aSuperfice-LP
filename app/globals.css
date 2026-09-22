@@ -37,6 +37,19 @@ html {
   overflow-x: hidden;
 }
 
+/* Assinatura da marca. Regra fora de @layer porque o CSS crítico inline
+   (img{height:auto}) vence as utilities do Tailwind v4, que ficam em camada. */
+.site-logo {
+  height: 2.5rem;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .site-logo {
+    height: 3rem;
+  }
+}
+
 /* Animações CSS nativas para melhor LCP - não bloqueiam renderização */
 @keyframes fade-in {
   from {
